@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>景点评价 - 畅游浙江</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --accent: #e74c3c;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --text: #34495e;
+            --text-light: #7f8c8d;
+            --points: #f39c12;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background-color: var(--dark);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .nav-btn i {
+            font-size: 1rem;
+        }
+
+        .profile-btn {
+            background-color: var(--primary);
+        }
+
+        .points-btn {
+            background-color: var(--points);
+        }
+
+        .community-btn {
+            background-color: #9b59b6;
+        }
+
+        /* 用户信息 */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: white;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        /* 主要内容区域 */
+        .container {
+            max-width: 800px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        /* 评价卡片 */
+        .review-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            margin-bottom: 2rem;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+
+        .review-title {
+            font-size: 1.5rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .review-title i {
+            color: var(--points);
+        }
+
+        .spot-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .spot-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .spot-details h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .spot-location {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .spot-location i {
+            font-size: 0.9rem;
+        }
+
+        /* 星级评价 */
+        .rating-section {
+            margin-bottom: 2rem;
+        }
+
+        .rating-title {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .rating-stars {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .star {
+            font-size: 2rem;
+            color: #ddd;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .star:hover, .star.active {
+            color: #ffcc00;
+        }
+
+        .rating-hint {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        /* 评价内容 */
+        .content-section {
+            margin-bottom: 2rem;
+        }
+
+        .content-title {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            resize: vertical;
+            transition: border-color 0.3s;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+
+        /* 积分提示 */
+        .points-info {
+            background-color: #f0f7ff;
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .points-info i {
+            color: var(--points);
+            font-size: 1.2rem;
+        }
+
+        .points-text {
+            color: var(--text);
+            font-size: 0.9rem;
+        }
+
+        /* 按钮区域 */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: #27ae60;
+        }
+
+        .btn-secondary {
+            background-color: #f5f5f5;
+            color: var(--text);
+        }
+
+        .btn-secondary:hover {
+            background-color: #e0e0e0;
+        }
+
+        /* 评价示例 */
+        .examples-section {
+            margin-top: 3rem;
+        }
+
+        .examples-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .examples-title i {
+            color: var(--primary);
+        }
+
+        .example-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .example-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            border: 1px solid #eee;
+        }
+
+        .example-rating {
+            color: #ffcc00;
+            margin-bottom: 0.5rem;
+        }
+
+        .example-content {
+            font-size: 0.9rem;
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 1rem;
+            }
+
+            .review-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 顶部导航栏 -->
+<nav class="navbar">
+    <div class="logo">
+        <i class="fas fa-map-marked-alt"></i>
+        <span>畅游浙江</span>
+    </div>
+
+    <div class="nav-actions">
+        <a href="profile.html" class="nav-btn profile-btn">
+            <i class="fas fa-user"></i>
+            <span>个人中心</span>
+        </a>
+        <a href="community.html" class="nav-btn community-btn">
+            <i class="fas fa-comments"></i>
+            <span>交流社区</span>
+        </a>
+        <a href="product.html" class="nav-btn points-btn">
+            <i class="fas fa-gift"></i>
+            <span>积分商城</span>
+        </a>
+
+        <div id="user-info" class="user-info" style="display: none;">
+            <div class="user-avatar" id="user-avatar">U</div>
+            <span id="username-display"></span>
+            <button class="nav-btn logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>退出</span>
+            </button>
+        </div>
+        <button id="login-button" class="nav-btn login-btn" onclick="goToLogin()">
+            <i class="fas fa-sign-in-alt"></i>
+            <span>登录</span>
+        </button>
+    </div>
+</nav>
+
+<!-- 主要内容 -->
+<div class="container">
+    <div class="review-card">
+        <div class="review-header">
+            <h1 class="review-title">
+                <i class="fas fa-edit"></i>
+                <span>评价景点</span>
+            </h1>
+        </div>
+
+        <!-- 星级评价 -->
+        <div class="rating-section">
+            <h3 class="rating-title">请为景点评分</h3>
+            <div class="rating-stars">
+                <div class="star" onclick="rate(1)">★</div>
+                <div class="star" onclick="rate(2)">★</div>
+                <div class="star" onclick="rate(3)">★</div>
+                <div class="star" onclick="rate(4)">★</div>
+                <div class="star" onclick="rate(5)">★</div>
+            </div>
+            <p class="rating-hint">点击星星进行评分，5星为最高分</p>
+        </div>
+
+        <!-- 评价内容 -->
+        <div class="content-section">
+            <h3 class="content-title">写下您的评价</h3>
+            <textarea id="review-content" placeholder="请详细描述您的体验感受，字数越多获得积分越多..."></textarea>
+
+            <!-- 积分提示 -->
+            <div class="points-info" id="points-info">
+                <i class="fas fa-info-circle"></i>
+                <div class="points-text">当前字数: 0 | 预计获得积分: 0 | 当前评分: 0星</div>
+            </div>
+        </div>
+
+        <!-- 按钮区域 -->
+        <div class="action-buttons">
+            <button class="btn btn-primary" onclick="submitReview()">
+                <i class="fas fa-paper-plane"></i>
+                <span>提交评价</span>
+            </button>
+            <button class="btn btn-secondary" onclick="goBack()">
+                <i class="fas fa-arrow-left"></i>
+                <span>返回</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- 评价示例 -->
+    <div class="examples-section">
+        <h3 class="examples-title">
+            <i class="fas fa-lightbulb"></i>
+            <span>优质评价示例</span>
+        </h3>
+        <div class="example-cards">
+            <div class="example-card">
+                <div class="example-rating">★★★★★</div>
+                <p class="example-content">杭州西湖是中国最具诗意的湖泊，"西湖十景"四季皆美，春有苏堤烟柳，夏有曲院风荷，秋有平湖秋月，冬有断桥残雪。漫步湖畔，处处是文人墨客的千年遗韵，泛舟湖上更觉山水如画。免费开放、交通便利，但节假日人潮拥挤，建议错峰游览，静品江南韵味。</p>
+            </div>
+            <div class="example-card">
+                <div class="example-rating">★★★★☆</div>
+                <p class="example-content">天一阁是中国现存最古老的私家藏书楼，文化底蕴深厚，建筑古朴典雅。园林布局精巧，环境清幽雅致，展现了江南文化的独特魅力。藏书文物丰富，历史价值极高，是文人墨客的朝圣地。管理完善，讲解专业，但部分区域限流参观。强烈推荐给历史文化爱好者！</p>
+            </div>
+            <div class="example-card">
+                <div class="example-rating">★★★★★</div>
+                <p class="example-content">宁波老外滩是充满历史韵味的时尚地标，中西建筑交融，夜景璀璨迷人。沿江酒吧、餐厅林立，氛围悠闲浪漫。文化展览与创意店铺为街区增添艺术气息，适合拍照打卡、小酌怡情。唯一不足是规模较小，1-2小时即可逛完，但作为免费景区非常值得一游！</p>
+            </div>
+            <div class="example-card">
+                <div class="example-rating">★★★★★</div>
+                <p class="example-content">千岛湖景色绝美，湖水清澈见底，岛屿星罗棋布，宛如仙境。空气清新，环境宜人，是放松身心的好去处。骑行、游船、美食体验丰富，尤其鱼头汤鲜美难忘。景区管理规范，服务周到，性价比高，强烈推荐家庭出游！</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 获取URL参数
+    const urlParams = new URLSearchParams(window.location.search);
+    const spotId = urlParams.get('spotId');
+    const userId = localStorage.getItem('userId');
+    const username = localStorage.getItem('username');
+
+    // 检查登录状态
+    function checkLoginStatus() {
+        const username = localStorage.getItem('username');
+        if (username) {
+            document.getElementById('username-display').textContent = username;
+            document.getElementById('user-avatar').textContent = username.charAt(0).toUpperCase();
+            document.getElementById('user-info').style.display = 'flex';
+            document.getElementById('login-button').style.display = 'none';
+        } else {
+            document.getElementById('user-info').style.display = 'none';
+            document.getElementById('login-button').style.display = 'flex';
+        }
+    }
+
+    // 跳转到登录页面
+    function goToLogin() {
+        window.location.href = 'login.html';
+    }
+
+    // 退出登录
+    function logout() {
+        localStorage.removeItem('username');
+        localStorage.removeItem('userId');
+        checkLoginStatus();
+        alert('退出成功！');
+        window.location.href = 'index.html';
+    }
+
+    // 页面加载时检查登录状态
+    window.onload = function() {
+        checkLoginStatus();
+
+        if (!username || !userId) {
+            alert('请先登录！');
+            window.location.href = 'login.html';
+            return;
+        }
+
+        // 加载景点信息
+        loadSpotInfo(spotId);
+    };
+
+    // 加载景点信息
+    function loadSpotInfo(spotId) {
+        // 模拟API请求获取景点信息
+        fetch(`/api/spots/${spotId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.getElementById('spotName').textContent = data.name;
+                    document.getElementById('spotLocation').textContent = data.location;
+                    document.getElementById('spotImage').src = data.imageUrl;
+                } else {
+                    console.error('加载景点信息失败:', data.message);
+                }
+            })
+            .catch(error => {
+                console.error('加载景点信息出错:', error);
+                // 使用默认数据演示
+                document.getElementById('spotName').textContent = "示例景点";
+                document.getElementById('spotLocation').textContent = "浙江杭州";
+                document.getElementById('spotImage').src = "/images/xihu.png";
+            });
+    }
+
+    let rating = 0; // 用户选择的星级
+
+    // 星级评价功能
+    function rate(star) {
+        rating = star;
+        const stars = document.querySelectorAll('.star');
+        stars.forEach((s, index) => {
+            s.classList.toggle('active', index < star);
+        });
+        updatePointsInfo();
+    }
+
+    // 更新积分提示
+    function updatePointsInfo() {
+        const content = document.getElementById('review-content').value;
+        const wordCount = content.trim().length;
+        let points = 0;
+
+        if (wordCount > 0) {
+            if (wordCount < 100) points = 1;
+            else if (wordCount < 200) points = 2;
+            else points = 3;
+        }
+
+        // 如果有评分，额外加1分
+        if (rating > 0) {
+            points += 1;
+        }
+
+        document.getElementById('points-info').innerHTML = `
+            <i class="fas fa-info-circle"></i>
+            <div class="points-text">
+                当前字数: ${wordCount} | 预计获得积分: ${points} | 当前评分: ${rating}星
+            </div>
+        `;
+    }
+
+    // 监听输入变化
+    document.getElementById('review-content').addEventListener('input', updatePointsInfo);
+
+    // 提交评价
+    function submitReview() {
+        const reviewContent = document.getElementById('review-content').value;
+
+        if (!reviewContent) {
+            alert('请输入评价内容！');
+            return;
+        }
+
+        if (rating === 0) {
+            alert('请选择星级评分！');
+            return;
+        }
+
+        fetch('/api/reviews', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                spotId,
+                userId,
+                userName: username,
+                content: reviewContent,
+                rating
+            }),
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert(`评价成功！获得${data.points}积分`);
+                    goBack();
+                } else {
+                    alert('评价失败: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('提交评价失败:', error);
+                alert('提交评价失败，请稍后重试');
+            });
+    }
+
+    // 返回景点页面
+    function goBack() {
+        window.location.href = `scenery.html?spotId=${spotId}`;
+    }
+</script>
+</body>
+</html>

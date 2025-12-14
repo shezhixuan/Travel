@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>如家商旅酒店(西湖湖滨店) - 畅游浙江</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* 复用系统原有样式 */
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --accent: #e74c3c;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --text: #34495e;
+            --text-light: #7f8c8d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* 复用导航栏样式 */
+        .navbar {
+            background-color: var(--dark);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+
+        /* 详情页内容样式 */
+        .detail-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .detail-header {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-title {
+            font-size: 2rem;
+            color: var(--dark);
+            font-weight: 700;
+        }
+
+        .detail-location {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-light);
+        }
+
+        .detail-gallery {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .main-image {
+            grid-column: span 2;
+            grid-row: span 2;
+            height: 400px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .secondary-image {
+            height: 190px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .detail-gallery img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .detail-gallery img:hover {
+            transform: scale(1.03);
+        }
+
+        .detail-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+        }
+
+        .detail-description {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+
+        .detail-description h2 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .detail-description p {
+            margin-bottom: 1rem;
+            line-height: 1.8;
+        }
+
+        .detail-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .detail-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+        }
+
+        .detail-card h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .price-card {
+            background: var(--primary);
+            color: white;
+            text-align: center;
+        }
+
+        .price-card .price {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 1rem 0;
+        }
+
+        .book-btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 1rem;
+        }
+
+        .book-btn:hover {
+            background: #27ae60;
+        }
+
+        .info-list {
+            list-style: none;
+        }
+
+        .info-list li {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .info-list li:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: var(--text-light);
+        }
+
+        /* 酒店特色样式 */
+        .amenities-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .amenity-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .detail-gallery {
+                grid-template-columns: 1fr;
+            }
+
+            .main-image {
+                grid-column: span 1;
+                grid-row: span 1;
+                height: 250px;
+            }
+
+            .secondary-image {
+                height: 120px;
+            }
+
+            .detail-content {
+                grid-template-columns: 1fr;
+            }
+
+            .amenities-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 导航栏 -->
+<nav class="navbar">
+    <div class="logo">
+        <i class="fas fa-map-marked-alt"></i>
+        <span>畅游浙江</span>
+    </div>
+    <div class="nav-actions">
+        <a href="hotel.html" class="nav-btn" style="background-color: var(--primary);">
+            <i class="fas fa-arrow-left"></i>
+            <span>返回酒店列表</span>
+        </a>
+    </div>
+</nav>
+
+<!-- 详情页内容 -->
+<div class="detail-container">
+    <div class="detail-header">
+        <h1 class="detail-title">如家商旅酒店(西湖湖滨店)</h1>
+        <div class="detail-location">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>杭州西湖湖滨银泰步行街</span>
+            <span class="hotel-rating" style="margin-left: 1rem;">★★★★★</span>
+        </div>
+    </div>
+
+    <div class="detail-gallery">
+        <div class="main-image">
+            <img src="../images/rujiabg1.png" alt="如家商旅酒店外观">
+        </div>
+        <div class="secondary-image">
+            <img src="../images/rujiabg2.png" alt="酒店大堂">
+        </div>
+        <div class="secondary-image">
+            <img src="../images/rujiabg3.png" alt="商务客房">
+        </div>
+        <div class="secondary-image">
+            <img src="../images/rujiabg4.png" alt="会议室">
+        </div>
+        <div class="secondary-image">
+            <img src="../images/rujiabg5.png" alt="会议室">
+        </div>
+        <div class="secondary-image">
+            <img src="../images/rujiabg6.png" alt="会议室">
+        </div>
+    </div>
+
+    <div class="detail-content">
+        <div class="detail-description">
+            <h2>酒店介绍</h2>
+            <p>如家商旅酒店(西湖湖滨店)位于杭州市中心繁华的湖滨商圈，步行即可到达西湖景区。酒店定位商务型酒店，为商务人士和旅游客人提供高性价比的住宿服务。</p>
+
+            <h2 style="margin-top: 2rem;">客房信息</h2>
+            <p>酒店拥有各类客房，包括标准间、商务大床房和豪华套房，面积从25平方米至60平方米不等。客房配备符合人体工学的办公区域和高速网络。</p>
+
+            <h2 style="margin-top: 2rem;">设施服务</h2>
+            <div class="amenities-grid">
+                <div class="amenity-item">
+                    <i class="fas fa-wifi"></i>
+                    <span>免费高速WiFi</span>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-utensils"></i>
+                    <span>自助早餐</span>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-business-time"></i>
+                    <span>商务中心</span>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-concierge-bell"></i>
+                    <span>24小时前台</span>
+                </div>
+                <div class="amenity-item">
+                    <i class="fas fa-tshirt"></i>
+                    <span>洗衣服务</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="detail-sidebar">
+            <div class="detail-card price-card">
+                <h3>今日价格</h3>
+                <div class="price">¥788</div>
+                <p>商务大床房/晚</p>
+                <button class="book-btn" onclick="goToBooking(3)">
+                    <i class="fas fa-calendar-check"></i> 立即预订
+                </button>
+            </div>
+
+            <div class="detail-card">
+                <h3>基本信息</h3>
+                <ul class="info-list">
+                    <li>
+                        <span class="info-label">开业时间:</span>
+                        <span>2018年</span>
+                    </li>
+                    <li>
+                        <span class="info-label">客房数量:</span>
+                        <span>120间</span>
+                    </li>
+                    <li>
+                        <span class="info-label">酒店类型:</span>
+                        <span>商务型酒店</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="detail-card">
+                <h3>交通信息</h3>
+                <ul class="info-list">
+                    <li>
+                        <span class="info-label">距西湖:</span>
+                        <span>步行5分钟</span>
+                    </li>
+                    <li>
+                        <span class="info-label">距地铁站:</span>
+                        <span>步行2分钟</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function goToBooking(hotelId) {
+        if (!localStorage.getItem('userId')) {
+            alert('请先登录！');
+            window.location.href = 'login.html';
+            return;
+        }
+        window.location.href = `booking.html?hotelId=${hotelId}`;
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅游系统-畅游浙江</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --accent: #e74c3c;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --text: #34495e;
+            --text-light: #7f8c8d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+            background-color: #f8f9fa;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background-color: var(--dark);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 600px;
+            margin: 0 2rem;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.6rem 1rem;
+            border: none;
+            border-radius: 30px;
+            font-size: 0.95rem;
+            padding-left: 2.5rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .nav-btn i {
+            font-size: 1rem;
+        }
+
+        .nav-btn:hover {
+            opacity: 0.9;
+        }
+
+        .profile-btn {
+            background-color: var(--primary);
+        }
+
+        .points-btn {
+            background-color: var(--secondary);
+        }
+
+        .login-btn {
+            background-color: var(--primary);
+        }
+
+        .logout-btn {
+            background-color: var(--accent);
+        }
+
+        /* 用户信息 */
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: white;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        /* 筛选区域 */
+        .filters {
+            background-color: white;
+            padding: 1.5rem 2rem;
+            margin: 1.5rem auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            max-width: 1200px;
+        }
+
+        .filter-title {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-title i {
+            color: var(--primary);
+        }
+
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .filter-tag {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            background-color: var(--light);
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-tag:hover {
+            background-color: #dfe6e9;
+        }
+
+        .filter-tag input {
+            margin-right: 0.3rem;
+        }
+
+        .refresh-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: background-color 0.3s;
+        }
+
+        .refresh-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* 景点列表 */
+        .spots-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem 2rem;
+        }
+
+        .spots-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .spot-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .spot-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .spot-image {
+            height: 180px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spot-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .spot-card:hover .spot-image img {
+            transform: scale(1.05);
+        }
+
+        .spot-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .spot-content {
+            padding: 1.2rem;
+        }
+
+        .spot-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .spot-location {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .spot-location i {
+            font-size: 0.9rem;
+        }
+
+        .spot-description {
+            color: var(--text);
+            font-size: 0.9rem;
+            margin-bottom: 1.2rem;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .spot-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 0.8rem;
+            border-top: 1px solid #eee;
+        }
+
+        .spot-price {
+            font-weight: 700;
+            color: var(--accent);
+            font-size: 1.1rem;
+        }
+
+        .spot-price small {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            font-weight: normal;
+        }
+
+        .spot-actions {
+            display: flex;
+            gap: 0.6rem;
+        }
+
+        .action-btn {
+            padding: 0.5rem 0.8rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .action-btn i {
+            font-size: 0.9rem;
+        }
+
+        .review-btn {
+            background-color: #f0f7ff;
+            color: var(--primary);
+            border: 1px solid #d6e4f0;
+        }
+
+        .review-btn:hover {
+            background-color: #e1f0ff;
+        }
+
+        .book-btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+        }
+
+        .book-btn:hover {
+            background-color: #27ae60;
+        }
+
+        .details-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+        }
+
+        .details-btn:hover {
+            background-color: #2980b9;
+        }
+
+        /* 空状态提示 */
+        .empty-state {
+            text-align: center;
+            padding: 3rem 0;
+            grid-column: 1 / -1;
+        }
+
+        .empty-icon {
+            font-size: 3rem;
+            color: #bdc3c7;
+            margin-bottom: 1rem;
+        }
+
+        .empty-text {
+            color: var(--text-light);
+            margin-bottom: 1.5rem;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 992px) {
+            .navbar {
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .search-container {
+                margin: 0;
+                width: 100%;
+            }
+
+            .nav-actions {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .filters {
+                padding: 1rem;
+            }
+
+            .filter-options {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .spots-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .spot-actions {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 顶部导航栏 -->
+<nav class="navbar">
+    <div class="logo">
+        <i class="fas fa-map-marked-alt"></i>
+        <span>畅游浙江</span>
+    </div>
+
+    <div class="search-container">
+        <i class="fas fa-search search-icon"></i>
+        <input type="text" class="search-input" id="search-input" placeholder="搜索景点、目的地...">
+    </div>
+    <div class="nav-actions">
+        <a href="index.html" class="nav-btn">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </a>
+        <a href="profile.html" class="nav-btn profile-btn">
+            <i class="fas fa-user"></i>
+            <span>个人中心</span>
+        </a>
+        <!-- 在 scenery.html 文件的导航栏部分（nav-actions div 内）添加以下代码 -->
+        <a href="community.html" class="nav-btn" style="background-color: #9b59b6;">
+            <i class="fas fa-comments"></i>
+            <span>交流社区</span>
+        </a>
+        <a href="product.html" class="nav-btn points-btn">
+            <i class="fas fa-gift"></i>
+            <span>积分商城</span>
+        </a>
+
+        <div id="user-info" class="user-info" style="display: none;">
+            <div class="user-avatar" id="user-avatar">U</div>
+            <span id="username-display"></span>
+            <button class="nav-btn logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>退出</span>
+            </button>
+        </div>
+        <button id="login-button" class="nav-btn login-btn" onclick="goToLogin()">
+            <i class="fas fa-sign-in-alt"></i>
+            <span>登录</span>
+        </button>
+    </div>
+</nav>
+
+<!-- 筛选区域 -->
+<div class="filters">
+    <h3 class="filter-title">
+        <i class="fas fa-sliders-h"></i>
+        <span>你更加关注的是：</span>
+    </h3>
+    <div class="filter-options">
+        <label class="filter-tag">
+            <input type="checkbox" name="metric" value="环境">
+            <span>景点环境</span>
+        </label>
+        <label class="filter-tag">
+            <input type="checkbox" name="metric" value="服务">
+            <span>景点服务</span>
+        </label>
+        <label class="filter-tag">
+            <input type="checkbox" name="metric" value="娱乐性">
+            <span>娱乐性</span>
+        </label>
+        <label class="filter-tag">
+            <input type="checkbox" name="metric" value="周边服务">
+            <span>周边服务</span>
+        </label>
+        <button class="refresh-btn" onclick="refreshSpots()">
+            <i class="fas fa-sync-alt"></i>
+            <span>刷新结果</span>
+        </button>
+    </div>
+</div>
+
+<!-- 景点列表 -->
+<div class="spots-container">
+    <div class="spots-grid" id="spots-container">
+        <!-- 景点动态加载 -->
+        <div class="spot-card">
+            <div class="spot-image">
+                <img src="https://example.com/west-lake.jpg" alt="西湖">
+                <span class="spot-badge">热门</span>
+            </div>
+            <div class="spot-content">
+                <h3 class="spot-title">西湖</h3>
+                <div class="spot-location">
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>杭州, 浙江</span>
+                </div>
+                <p class="spot-description">杭州的标志性景点，世界文化遗产，湖光山色美不胜收，四季景色各异，是来杭州必游之地。</p>
+                <div class="spot-footer">
+                    <div class="spot-price">¥599<small>起/人</small></div>
+                    <div class="spot-actions">
+                        <button class="action-btn review-btn" onclick="goToComment(1)">
+                            <i class="far fa-comment"></i>
+                            <span>评价</span>
+                        </button>
+                        <button class="action-btn book-btn" onclick="createOrder(1)">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>预定</span>
+                        </button>
+                        <button class="action-btn review-btn" onclick="goToReviews()">
+                            <i class="far fa-comment"></i>
+                            <span>评价详情</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 保持原有JavaScript功能 -->
+<script>
+    // 跳转到登录页面
+    function goToLogin() {
+        window.location.href = 'login.html';
+    }
+
+    // 跳转到积分商城页面
+    function goToProduct() {
+        window.location.href = 'product.html';
+    }
+
+    // 退出登录
+    function logout() {
+        localStorage.removeItem('username');
+        checkLoginStatus();
+        alert('退出成功！');
+    }
+
+    // 显示当前登录的用户名
+    function displayUsername() {
+        const username = localStorage.getItem('username');
+        if (username) {
+            document.getElementById('username-display').textContent = username;
+            document.getElementById('user-avatar').textContent = username.charAt(0).toUpperCase();
+        }
+    }
+
+    // 页面加载时显示用户名
+    window.onload = () => {
+        checkLoginStatus();
+        fetchRecommendedSpots([]);
+    };
+
+    // 检查登录状态
+    function checkLoginStatus() {
+        const username = localStorage.getItem('username');
+        if (username) {
+            document.getElementById('username-display').textContent = username;
+            document.getElementById('user-info').style.display = 'flex';
+            document.getElementById('login-button').style.display = 'none';
+            displayUsername();
+        } else {
+            document.getElementById('user-info').style.display = 'none';
+            document.getElementById('login-button').style.display = 'flex';
+        }
+    }
+
+    // 加载推荐景点
+    function fetchRecommendedSpots(selectedMetrics) {
+        let url = '/api/scenic-spots/recommended';
+        if (selectedMetrics.length > 0) {
+            url = '/api/scenic-spots/recommended/metrics';
+            const params = new URLSearchParams();
+            selectedMetrics.forEach(metric => params.append('metrics', metric));
+            url += `?${params.toString()}`;
+        }
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                const spotsContainer = document.getElementById('spots-container');
+                spotsContainer.innerHTML = '';
+
+                if (data.length === 0) {
+                    spotsContainer.innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <i class="fas fa-map-marked-alt"></i>
+                                </div>
+                                <h3 class="empty-text">没有找到符合条件的景点</h3>
+                                <button class="refresh-btn" onclick="refreshSpots()">
+                                    <i class="fas fa-sync-alt"></i>
+                                    <span>重新加载</span>
+                                </button>
+                            </div>
+                        `;
+                    return;
+                }
+
+                data.forEach(spot => {
+                    const spotDiv = document.createElement('div');
+                    spotDiv.className = 'spot-card';
+                    spotDiv.innerHTML = `
+                            <div class="spot-image">
+                                <img src="${spot.imageUrl}" alt="${spot.name}" />
+                                <span class="spot-badge">${spot.tag || '推荐'}</span>
+                            </div>
+                            <div class="spot-content">
+                                <h3 class="spot-title">${spot.name}</h3>
+                                <div class="spot-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>${spot.location || '未知地区'}</span>
+                                </div>
+                                <p class="spot-description">${spot.description}</p>
+                                <div class="spot-footer">
+                                    <div class="spot-price">¥${spot.price || '0'}<small>起/人</small></div>
+                                    <div class="spot-actions">
+                                        <button class="action-btn review-btn" onclick="goToComment(${spot.id})">
+                                            <i class="far fa-comment"></i>
+                                            <span>评价</span>
+                                        </button>
+                                        <button class="action-btn book-btn" onclick="goToTicket(${spot.id})">
+                                            <i class="fas fa-ticket-alt"></i>
+                                            <span>购票</span>
+                                        </button>
+                                        <button class="action-btn review-btn" onclick="goToReviews(${spot.id})">
+                                            <i class="far fa-comment"></i>
+                                            <span>评价详情</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    spotsContainer.appendChild(spotDiv);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching spots:', error);
+                const spotsContainer = document.getElementById('spots-container');
+                spotsContainer.innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <i class="fas fa-exclamation-triangle"></i>
+                            </div>
+                            <h3 class="empty-text">加载景点失败，请稍后重试</h3>
+                            <button class="refresh-btn" onclick="refreshSpots()">
+                                <i class="fas fa-sync-alt"></i>
+                                <span>重新加载</span>
+                            </button>
+                        </div>
+                    `;
+            });
+    }
+
+    // 刷新景点
+    function refreshSpots() {
+        const selectedMetrics = Array.from(document.querySelectorAll('input[name="metric"]:checked'))
+            .map(input => input.value);
+        fetchRecommendedSpots(selectedMetrics);
+    }
+
+    // 搜索景点
+    function searchSpots() {
+        const query = document.getElementById('search-input').value.trim();
+        if (!query) {
+            fetchRecommendedSpots([]);
+            return;
+        }
+
+        fetch(`/api/scenic-spots/search?name=${encodeURIComponent(query)}`)
+            .then(response => response.json())
+            .then(data => {
+                const spotsContainer = document.getElementById('spots-container');
+                spotsContainer.innerHTML = '';
+
+                if (data.length === 0) {
+                    spotsContainer.innerHTML = `
+                            <div class="empty-state">
+                                <div class="empty-icon">
+                                    <i class="fas fa-search"></i>
+                                </div>
+                                <h3 class="empty-text">没有找到"${query}"相关的景点</h3>
+                                <button class="refresh-btn" onclick="fetchRecommendedSpots([])">
+                                    <i class="fas fa-undo"></i>
+                                    <span>显示全部景点</span>
+                                </button>
+                            </div>
+                        `;
+                    return;
+                }
+
+                data.forEach(spot => {
+                    const spotDiv = document.createElement('div');
+                    spotDiv.className = 'spot-card';
+                    spotDiv.innerHTML = `
+                            <div class="spot-image">
+                                <img src="${spot.imageUrl}" alt="${spot.name}" />
+                                <span class="spot-badge">${spot.tag || '搜索结果'}</span>
+                            </div>
+                            <div class="spot-content">
+                                <h3 class="spot-title">${spot.name}</h3>
+                                <div class="spot-location">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>${spot.location}</span>
+                                </div>
+                                <p class="spot-description">${spot.description}</p>
+                                <div class="spot-footer">
+                                    <div class="spot-price">¥${spot.price || '99'}<small>起/人</small></div>
+                                    <div class="spot-actions">
+                                        <button class="action-btn review-btn" onclick="goToComment(${spot.id})">
+                                            <i class="far fa-comment"></i>
+                                            <span>评价</span>
+                                        </button>
+                                        <button class="action-btn book-btn" onclick="goToTicket(${spot.id})">
+                                            <i class="fas fa-ticket-alt"></i>
+                                            <span>购票</span>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    spotsContainer.appendChild(spotDiv);
+                });
+            })
+            .catch(error => {
+                console.error('Error searching spots:', error);
+            });
+    }
+
+    // 跳转到评价页面
+    function goToComment(spotId) {
+        window.location.href = `comment.html?spotId=${spotId}`;
+    }
+    function goToReviews(spotId){
+        window.location.href =  `reviews.html?spotId=${spotId}`;
+    }
+
+    // 修改原来的createOrder函数
+    function goToTicket(spotId) {
+        if (!localStorage.getItem('userId')) {
+            alert('请先登录！');
+            window.location.href = 'login.html';
+            return;
+        }
+        window.location.href = `ticket.html?spotId=${spotId}`;
+    }
+
+
+    // 监听搜索输入框回车键
+    document.getElementById('search-input').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            searchSpots();
+        }
+    });
+</script>
+</body>
+</html>

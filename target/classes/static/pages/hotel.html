@@ -1,0 +1,1070 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>酒店推荐-畅游浙江</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 导航栏样式 */
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0066cc;
+        }
+
+        .logo span {
+            color: #ff6600;
+        }
+
+        .main-nav ul {
+            display: flex;
+        }
+
+        .main-nav li {
+            margin: 0 15px;
+            position: relative;
+        }
+
+        .main-nav a {
+            padding: 10px 0;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .main-nav a:hover {
+            color: #0066cc;
+        }
+
+        .main-nav li.active a {
+            color: #0066cc;
+            border-bottom: 2px solid #0066cc;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-actions a {
+            margin-left: 20px;
+            padding: 8px 15px;
+            border-radius: 4px;
+        }
+
+        .login-btn {
+            color: #0066cc;
+        }
+
+        .register-btn {
+            background-color: #0066cc;
+            color: white;
+        }
+
+        /* 轮播图样式 */
+        .banner {
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .banner img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .banner-content {
+            position: absolute;
+            top: 50%;
+            left: 100px;
+            transform: translateY(-50%);
+            color: white;
+            max-width: 500px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .banner-content h1 {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        .banner-content p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        /* 搜索框样式 */
+        .search-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: -50px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-form {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .search-btn {
+            padding: 12px 30px;
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* 筛选区域 */
+        .filter-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            margin: 30px 0;
+        }
+
+        .filter-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .filter-title {
+            font-weight: bold;
+            margin-right: 15px;
+            min-width: 80px;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-option {
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .filter-option:hover {
+            border-color: #0066cc;
+            color: #0066cc;
+        }
+
+        .filter-option.active {
+            background-color: #0066cc;
+            color: white;
+            border-color: #0066cc;
+        }
+
+        /* 酒店列表 */
+        .section-title {
+            font-size: 24px;
+            margin: 40px 0 20px;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            height: 20px;
+            width: 5px;
+            background-color: #0066cc;
+        }
+
+        .hotels {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .hotel-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .hotel-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        .hotel-img {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .hotel-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .hotel-card:hover .hotel-img img {
+            transform: scale(1.05);
+        }
+
+        .hotel-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff6600;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .hotel-info {
+            padding: 15px;
+        }
+
+        .hotel-info h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hotel-rating {
+            color: #ffcc00;
+            font-size: 14px;
+        }
+
+        .hotel-location {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .hotel-location i {
+            margin-right: 5px;
+            color: #0066cc;
+        }
+
+        .hotel-facilities {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .facility {
+            background-color: #f5f5f5;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .hotel-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+        }
+
+        .price {
+            color: #ff6600;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .price small {
+            font-size: 14px;
+            color: #999;
+            font-weight: normal;
+        }
+
+        .book-btn {
+            padding: 8px 15px;
+            background-color: #0066cc;
+            color: white;
+            border-radius: 4px;
+            font-size: 14px;
+            transition: background-color 0.3s;
+        }
+
+        .book-btn:hover {
+            background-color: #0055aa;
+        }
+
+        /* 分页 */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 40px 0;
+        }
+
+        .page-item {
+            margin: 0 5px;
+        }
+
+        .page-link {
+            display: block;
+            padding: 8px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            color: #333;
+            transition: all 0.3s;
+        }
+
+        .page-link:hover {
+            background-color: #f5f5f5;
+        }
+
+        .page-item.active .page-link {
+            background-color: #0066cc;
+            color: white;
+            border-color: #0066cc;
+        }
+
+        /* 底部样式 */
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 50px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-column h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: #ff6600;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a:hover {
+            color: #ff6600;
+        }
+
+        .contact-info p {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .contact-info i {
+            margin-right: 10px;
+            color: #ff6600;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #aaa;
+            font-size: 14px;
+        }
+
+        /* 用户信息区域样式 */
+        .user-info {
+            display: none; /* 默认隐藏 */
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-info.show {
+            display: flex; /* 登录后显示 */
+        }
+
+        .username {
+            font-weight: bold;
+            color: #0066cc;
+        }
+
+        .logout-btn {
+            padding: 5px 10px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        /* 市区导航栏容器 */
+        .region-nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eaeaea;
+            padding-bottom: 15px;
+        }
+
+        /* 市区导航栏主体 */
+        .region-nav {
+            overflow-x: auto;
+            padding-bottom: 5px; /* 为滚动条留空间 */
+        }
+
+        .region-list {
+            display: flex;
+            gap: 0; /* 使用边框代替间隙 */
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 市区导航项 */
+        .region-item {
+            position: relative;
+            margin-right: -1px; /* 解决边框重叠问题 */
+        }
+
+        .region-item a {
+            display: block;
+            padding: 10px 20px;
+            font-size: 15px;
+            color: #555;
+            text-decoration: none;
+            border: 1px solid #eaeaea;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+        }
+
+        /* 第一个和最后一个项的圆角 */
+        .region-item:first-child a {
+            border-radius: 4px 0 0 4px;
+        }
+
+        .region-item:last-child a {
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* 悬停和活动状态 */
+        .region-item a:hover {
+            color: #0066cc;
+            background-color: #f0f7ff;
+        }
+
+        .region-item.active a {
+            color: #0066cc;
+            background-color: #fff;
+            border-color: #eaeaea;
+            border-bottom-color: #fff;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 显示更多链接 */
+        .show-more-link {
+            margin-left: 20px;
+            white-space: nowrap;
+            color: #0066cc;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .show-more-link:hover {
+            color: #ff6600;
+            text-decoration: underline;
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .container {
+                width: 100%;
+                padding: 0 15px;
+            }
+
+            .hotels {
+                grid-template-columns: 1fr;
+            }
+
+            .region-nav-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .show-more-link {
+                margin: 15px 0 0 auto;
+            }
+
+            .region-item a {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+
+            .search-form {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .search-input {
+                margin-right: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 导航栏 -->
+<header>
+    <div class="container nav-container">
+        <div class="logo">畅游<span>浙江</span></div>
+        <nav class="main-nav">
+            <ul>
+                <li class="active"><a href="index.html">首页</a></li>
+                <li><a href="community.html">交流社区</a></li>
+                <li><a href="product.html">积分商城</a></li>
+                <li><a href="hotel.html">酒店推荐</a></li>
+                <li><a href="profile.html">个人中心</a></li>
+            </ul>
+        </nav>
+        <div class="user-actions" id="userActions">
+            <!-- 登录注册按钮 -->
+            <a href="login.html" class="login-btn" id="loginBtn">登录</a>
+            <a href="register.html" class="register-btn" id="registerBtn">注册</a>
+
+            <!-- 登录后显示的用户信息 - 确保这些ID与JS代码一致 -->
+            <div class="user-info" id="userInfo" style="display: none;">
+                <span class="welcome-text">欢迎，</span>
+                <span class="username" id="usernameDisplay"></span>
+                <a href="javascript:void(0);" class="logout-btn" id="logoutBtn">退出</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- 酒店推荐banner -->
+<section class="banner">
+    <img src="/images/jiudian2.png" alt="浙江精品酒店推荐">
+    <div class="banner-content">
+        <h1>浙江精品酒店推荐</h1>
+        <p>精选浙江各地高品质酒店，从豪华五星到特色民宿，满足您的不同需求</p>
+    </div>
+</section>
+
+<!-- 搜索框 -->
+<div class="container">
+    <div class="search-box">
+        <form class="search-form" id="hotelSearchForm">
+            <input type="text" class="search-input" id="destinationInput" placeholder="目的地/酒店名称">
+            <button type="submit" class="search-btn">搜索酒店</button>
+        </form>
+    </div>
+</div>
+
+
+<!-- 筛选区域 -->
+<div class="container">
+    <div class="filter-section">
+        <div class="filter-row">
+            <div class="filter-title">价格区间</div>
+            <div class="filter-options" id="priceFilter">
+                <div class="filter-option active" data-price="all">不限</div>
+                <div class="filter-option" data-price="200-500">¥200-500</div>
+                <div class="filter-option" data-price="500-1000">¥500-1000</div>
+                <div class="filter-option" data-price="1000-2000">¥1000-2000</div>
+                <div class="filter-option" data-price="2000+">¥2000以上</div>
+            </div>
+        </div>
+        <div class="filter-row">
+            <div class="filter-title">酒店星级</div>
+            <div class="filter-options" id="starFilter">
+                <div class="filter-option active" data-star="all">不限</div>
+                <div class="filter-option" data-star="3">经济型</div>
+                <div class="filter-option" data-star="4">舒适型</div>
+                <div class="filter-option" data-star="4.5">高档型</div>
+                <div class="filter-option" data-star="5">豪华型</div>
+            </div>
+        </div>
+        <div class="filter-row">
+            <div class="filter-title">酒店设施</div>
+            <div class="filter-options" id="facilityFilter">
+                <div class="filter-option active" data-facility="all">不限</div>
+                <div class="filter-option" data-facility="wifi">免费WiFi</div>
+                <div class="filter-option" data-facility="parking">停车场</div>
+                <div class="filter-option" data-facility="pool">游泳池</div>
+                <div class="filter-option" data-facility="gym">健身房</div>
+                <div class="filter-option" data-facility="restaurant">餐厅</div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- 酒店推荐 -->
+<div class="container">
+    <h2 class="section-title">精选酒店</h2>
+
+    <!-- 市区导航栏 -->
+    <div class="region-nav-container">
+        <nav class="region-nav">
+            <ul class="region-list">
+                <li class="region-item active"><a href="javascript:void(0);" data-region="all">全部</a></li>
+                <li class="region-item"><a href="javascript:void(0);" data-region="hangzhou">杭州</a></li>
+                <li class="region-item"><a href="javascript:void(0);" data-region="ningbo">宁波</a></li>
+                <li class="region-item"><a href="javascript:void(0);" data-region="wenzhou">温州</a></li>
+                <li class="region-item"><a href="javascript:void(0);" data-region="jiaxing">嘉兴</a></li>
+                <li class="region-item"><a href="javascript:void(0);" data-region="huzhou">湖州</a></li>
+                <li class="region-item"><a href="javascript:void(0);" data-region="shaoxing">绍兴</a></li>
+                <li class="region-item"><a href="javascript:void(0);" data-region="jinhua">金华</a></li>
+                <li class="region-item"><a href="javascript:void(0);" data-region="quzhou">衢州</a></li>
+                <li class="region-item"><a href="javascript:void(0);" data-region="zhoushan">舟山</a></li>
+                <li class="region-item"><a href="javascript:void(0);" data-region="taizhou">台州</a></li>
+                <li class="region-item"><a href="javascript:void(0);" data-region="lishui">丽水</a></li>
+            </ul>
+        </nav>
+        <a href="#" class="show-more-link">显示更多 &raquo;</a>
+    </div>
+
+    <div class="hotels" id="hotelsContainer">
+        <!-- 酒店卡片将通过JavaScript动态加载 -->
+    </div>
+
+    <!-- 分页 -->
+    <div class="pagination">
+        <div class="page-item">
+            <a href="#" class="page-link">上一页</a>
+        </div>
+        <div class="page-item active">
+            <a href="#" class="page-link">1</a>
+        </div>
+        <div class="page-item">
+            <a href="#" class="page-link">2</a>
+        </div>
+        <div class="page-item">
+            <a href="#" class="page-link">3</a>
+        </div>
+        <div class="page-item">
+            <a href="#" class="page-link">4</a>
+        </div>
+        <div class="page-item">
+            <a href="#" class="page-link">5</a>
+        </div>
+        <div class="page-item">
+            <a href="#" class="page-link">下一页</a>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('页面加载完成，检查登录状态...');
+
+        // 获取所有需要的DOM元素
+        const elements = {
+            loginBtn: document.getElementById('loginBtn'),
+            registerBtn: document.getElementById('registerBtn'),
+            userInfo: document.getElementById('userInfo'),
+            usernameDisplay: document.getElementById('usernameDisplay'),
+            logoutBtn: document.getElementById('logoutBtn')
+        };
+
+        // 检查元素是否存在
+        for (const [key, element] of Object.entries(elements)) {
+            if (!element) {
+                console.error(`未找到元素: ${key}`);
+                return; // 如果关键元素缺失，停止执行
+            }
+        }
+
+        // 检查登录状态
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        const username = localStorage.getItem('username');
+
+        console.log('登录状态:', isLoggedIn, '用户名:', username);
+
+        if (isLoggedIn && username) {
+            console.log('用户已登录，显示用户信息');
+            // 显示用户信息
+            elements.loginBtn.style.display = 'none';
+            elements.registerBtn.style.display = 'none';
+            elements.userInfo.style.display = 'flex';
+            elements.usernameDisplay.textContent = username;
+
+            // 添加退出按钮事件
+            elements.logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('用户点击退出');
+
+                // 清除本地存储
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('username');
+                localStorage.removeItem('userId');
+
+                // 刷新页面
+                window.location.reload();
+            });
+        } else {
+            console.log('用户未登录，显示登录按钮');
+            // 显示登录按钮
+            elements.loginBtn.style.display = 'inline-block';
+            elements.registerBtn.style.display = 'inline-block';
+            elements.userInfo.style.display = 'none';
+        }
+    });
+    // 从后端获取所有酒店数据
+    async function fetchAllHotels() {
+        try {
+            const response = await fetch('/api/hotels');
+            return await response.json();
+        } catch (error) {
+            console.error('获取酒店数据失败:', error);
+            return [];
+        }
+    }
+    // 按地区筛选酒店
+    async function fetchHotelsByRegion(region) {
+        try {
+            const response = await fetch(`/api/hotels/by-region?region=${region}`);
+            return await response.json();
+        } catch (error) {
+            console.error('按地区获取酒店失败:', error);
+            return [];
+        }
+    }
+    // 搜索酒店
+    async function searchHotels(name) {
+        try {
+            const response = await fetch(`/api/hotels/search?name=${name}`);
+            return await response.json();
+        } catch (error) {
+            console.error('搜索酒店失败:', error);
+            return [];
+        }
+    }
+    // 搜索功能
+    function setupSearch() {
+        const searchForm = document.getElementById('hotelSearchForm');
+
+        searchForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            // 获取搜索条件
+            const destination = document.getElementById('destinationInput').value;
+
+            // 调用搜索API
+            const hotels = await searchHotels(destination);
+
+            // 渲染搜索结果
+            renderHotels(hotels);
+
+            // 更新筛选状态
+            filterState.region = 'all';
+            document.querySelector('.region-item.active').classList.remove('active');
+            document.querySelector('.region-item[data-region="all"]').classList.add('active');
+        });
+    }
+    function renderHotels(hotels) {
+        const container = document.getElementById('hotelsContainer');
+        container.innerHTML = '';
+
+        if (hotels.length === 0) {
+            container.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 40px 0;">
+                <i class="fas fa-hotel" style="font-size: 3rem; color: #bdc3c7;"></i>
+                <h3 style="color: #7f8c8d; margin-top: 15px;">没有找到符合条件的酒店</h3>
+            </div>
+        `;
+            return;
+        }
+
+        // 设施映射
+        const facilityMapping = {
+            'wifi': '免费WiFi',
+            'parking': '停车场',
+            'pool': '游泳池',
+            'gym': '健身房',
+            'restaurant': '餐厅',
+            'sea-view': '海景房',
+            'river-view': '江景房',
+            'spa': '水疗中心',
+            'hot-spring': '温泉',
+            'ancient-town-view': '古镇景观',
+            'cultural-experience': '文化体验',
+            'movie-theme': '影视主题',
+            'private-beach': '私人沙滩',
+            'mountain-view': '山景房'
+        };
+
+        hotels.forEach(hotel => {
+            // 将逗号分隔的设施字符串转换为数组
+            const facilities = hotel.facilities ? hotel.facilities.split(',') : [];
+
+            // 根据酒店名称设置对应的详情页链接
+            let detailUrl = 'generic-hotel-details.html'; // 默认通用详情页
+            switch(hotel.name) {
+                case '杭州西湖国宾馆':
+                    detailUrl = 'xihu-hotel-details.html';
+                    break;
+                case '全季酒店':
+                    detailUrl = 'quanji-hotel-details.html';
+                    break;
+                case '如家商旅酒店':
+                    detailUrl = 'rujia-hotel-details.html';
+                    break;
+                case '宁波柏悦酒店':
+                    detailUrl = 'ningbo-hotel-details.html';
+                    break;
+                case '温州香格里拉大酒店':
+                    detailUrl = 'wenzhou-hotel-details.html';
+                    break;
+                // 可以继续添加其他酒店的详情页映射
+            }
+
+            const card = document.createElement('div');
+            card.className = 'hotel-card';
+            card.innerHTML = `
+            <a href="${detailUrl}" class="hotel-link" style="text-decoration: none; color: inherit; display: block;">
+                <div class="hotel-img">
+                    <img src="${hotel.imageUrl || '/images/default-hotel.jpg'}" alt="${hotel.name}">
+                    <span class="hotel-tag">${hotel.tag || '酒店'}</span>
+                </div>
+                <div class="hotel-info">
+                    <h3>${hotel.name} <span class="hotel-rating">${'★'.repeat(hotel.rating)}</span></h3>
+                    <p class="hotel-location"><i>📍</i> ${hotel.location}</p>
+                    <div class="hotel-facilities">
+                        ${facilities.map(f => {
+                const facility = f.trim();
+                return `<span class="facility">${facilityMapping[facility] || facility}</span>`;
+            }).join('')}
+                    </div>
+                    <div class="hotel-price">
+                        <div class="price">¥${hotel.price} <small>起/晚</small></div>
+                        <a href="#" class="book-btn">立即预订</a>
+                    </div>
+                </div>
+            </a>
+        `;
+
+            // 为预订按钮添加点击事件（阻止链接默认行为）
+            const bookBtn = card.querySelector('.book-btn');
+            bookBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                goToBooking(hotel.id);
+            });
+
+            container.appendChild(card);
+        });
+    }
+
+    /**
+     * 跳转到酒店预订页面
+     * @param {number} hotelId 酒店ID
+     */
+    function goToBooking(hotelId) {
+        if (!localStorage.getItem('userId')) {
+            alert('请先登录！');
+            window.location.href = 'login.html';
+            return;
+        }
+        window.location.href = `booking.html?hotelId=${hotelId}`;
+    }
+    // 筛选状态
+    let filterState = {
+        price: 'all',
+        star: 'all',
+        facility: 'all',
+        region: 'all'
+    };
+
+    // 价格范围映射
+    const priceRanges = {
+        '200-500': { min: 200, max: 500 },
+        '500-1000': { min: 500, max: 1000 },
+        '1000-2000': { min: 1000, max: 2000 },
+        '2000+': { min: 2000, max: Infinity }
+    };
+
+    // 星级映射
+    const starMapping = {
+        '3': 3,
+        '4': 4,
+        '4.5': 4.5,
+        '5': 5
+    };
+
+    // 应用所有筛选条件
+    async function applyFilters() {
+        // 先获取所有酒店
+        let hotels = await fetchAllHotels();
+
+        // 地区筛选
+        if (filterState.region !== 'all') {
+            hotels = hotels.filter(h => h.region === filterState.region);
+        }
+
+        // 价格筛选
+        if (filterState.price !== 'all') {
+            const range = priceRanges[filterState.price];
+            hotels = hotels.filter(h => h.price >= range.min && h.price <= range.max);
+        }
+
+        // 星级筛选
+        if (filterState.star !== 'all') {
+            const requiredStar = starMapping[filterState.star];
+            hotels = hotels.filter(h => h.rating >= requiredStar);
+        }
+
+        // 设施筛选
+        if (filterState.facility !== 'all') {
+            hotels = hotels.filter(h => {
+                const facilities = h.facilities ? h.facilities.split(',') : [];
+                return facilities.includes(filterState.facility);
+            });
+        }
+
+        renderHotels(hotels);
+    }
+
+    // 初始化筛选选项
+    function initFilters() {
+        // 价格筛选
+        document.querySelectorAll('#priceFilter .filter-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelector('#priceFilter .active').classList.remove('active');
+                this.classList.add('active');
+                filterState.price = this.dataset.price;
+                applyFilters();
+            });
+        });
+
+        // 星级筛选
+        document.querySelectorAll('#starFilter .filter-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelector('#starFilter .active').classList.remove('active');
+                this.classList.add('active');
+                filterState.star = this.dataset.star;
+                applyFilters();
+            });
+        });
+
+        // 设施筛选
+        document.querySelectorAll('#facilityFilter .filter-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelector('#facilityFilter .active').classList.remove('active');
+                this.classList.add('active');
+                filterState.facility = this.dataset.facility;
+                applyFilters();
+            });
+        });
+
+        // 地区筛选
+        document.querySelectorAll('.region-item a').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector('.region-item.active').classList.remove('active');
+                this.parentNode.classList.add('active');
+                filterState.region = this.dataset.region;
+                applyFilters();
+            });
+        });
+    }
+    // 页面加载时初始化
+    document.addEventListener('DOMContentLoaded', async () => {
+        setupSearch();
+        initFilters();
+
+        // 初始加载所有酒店
+        const hotels = await fetchAllHotels();
+        renderHotels(hotels);
+    });
+
+
+
+
+
+</script>
+</body>
+</html>

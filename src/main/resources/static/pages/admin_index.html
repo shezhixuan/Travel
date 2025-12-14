@@ -1,0 +1,2281 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅游管理系统 - 管理员首页</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .username {
+            margin-right: 20px;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #34495e;
+            position: fixed;
+            top: 60px;
+            bottom: 0;
+            left: 0;
+            padding-top: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        .nav-menu {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-item {
+            padding: 15px 25px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item:hover {
+            background-color: #3d566e;
+        }
+
+        .nav-item.active {
+            background-color: #3d566e;
+            border-left: 4px solid #1abc9c;
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 80px 20px 20px 220px;
+            min-height: 100vh;
+        }
+
+        .content-container {
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            min-height: calc(100vh - 120px);
+        }
+
+        .welcome-message {
+            font-size: 24px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .stats-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .stat-card {
+            background-color: #f8f9fa;
+            padding: 20px;
+            border-radius: 5px;
+            width: 23%;
+            min-width: 200px;
+            text-align: center;
+            box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1abc9c;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            color: #7f8c8d;
+        }
+        /* 标签页样式 */
+        .tabs {
+            margin: 20px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .tab-button {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .tab-button.active {
+            border-bottom: 3px solid #1abc9c;
+            color: #1abc9c;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px 0;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* 用户表格样式 */
+        .user-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .user-table th, .user-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .user-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .user-table tr:hover {
+            background-color: #f5f5f5;
+        }
+
+        /* 操作按钮样式 */
+        .action-btn {
+            padding: 5px 10px;
+            margin-right: 5px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background-color: #1abc9c;
+            color: white;
+        }
+
+        /* 模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            width: 400px;
+            border-radius: 5px;
+        }
+
+        .close {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        /* 订单管理特定样式 */
+        .search-box {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .search-box input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px 0 0 4px;
+        }
+
+        .search-box button {
+            padding: 10px 15px;
+            background-color: var(--primary);
+            color: cornflowerblue;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .data-table th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+
+        .data-table tr:hover {
+            background-color: limegreen;
+        }
+
+        .action-btn {
+            padding: 5px 10px;
+            margin-right: 5px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        .btn-danger {
+            background-color: var(--accent);
+            color: limegreen;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .pagination button {
+            padding: 8px 15px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .pagination button:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+        /* 子菜单样式 */
+        .sub-nav-menu {
+            padding-left: 20px;
+            list-style: none;
+        }
+
+        .sub-nav-item {
+            padding: 12px 25px;
+            color: #ecf0f1;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .sub-nav-item:hover {
+            background-color: #3d566e;
+            border-left: 4px solid #1abc9c;
+        }
+
+        .sub-nav-item.active {
+            background-color: #3d566e;
+            border-left: 4px solid #1abc9c;
+        }
+        /* 评价管理特定样式 */
+        .review-category {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .review-category-header {
+            background: #3498db;
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .review-category-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .review-category-count {
+            background: white;
+            color: #3498db;
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+
+        .review-list {
+            padding: 15px;
+            display: none; /* 默认折叠 */
+        }
+
+        .review-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .review-item:last-child {
+            border-bottom: none;
+        }
+
+        .review-user {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+
+        .review-rating {
+            color: #f39c12;
+            margin-bottom: 5px;
+        }
+
+        .review-content {
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .review-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #95a5a6;
+            font-size: 0.8rem;
+        }
+
+        .review-actions {
+            margin-top: 10px;
+        }
+
+        .btn-sm {
+            padding: 3px 8px;
+            font-size: 0.8rem;
+        }
+        /* 景点管理特定样式 */
+        .spot-management-container {
+            padding: 20px;
+        }
+
+        .spot-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .spot-actions button {
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .spot-actions .edit-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+        }
+
+        .spot-actions .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+        }
+
+        /* 模态框中的文本区域样式 */
+        .modal textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        /* 图片预览样式 */
+        .spot-image-preview {
+            width: 100px;
+            height: 80px;
+            object-fit: cover;
+            margin-top: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            display: none;
+        }
+        /* 可拖动模态框样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            overflow: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 20px;
+            width: 400px;
+            border-radius: 5px;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+
+        .modal-header {
+            padding: 10px 15px;
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 5px 5px 0 0;
+            cursor: move;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        /* 拖动时的样式 */
+        .modal-dragging {
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 160px;
+            }
+
+            .main-content {
+                padding-left: 180px;
+            }
+
+            .stat-card {
+                width: 48%;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="header">
+    <div class="logo">旅游数据后台管理</div>
+    <div class="user-info">
+        <div class="username" id="adminUsername"></div>
+        <div class="logout" onclick="logout()">退出</div>
+    </div>
+</div>
+
+<div class="sidebar">
+    <ul class="nav-menu">
+        <li class="nav-item" onclick="showDashboard()">服务首页</li>
+        <li class="nav-item active" onclick="showSystemManagement()">系统管理</li>
+        <li class="nav-item active" onclick="showBasicDataManagement()">基础数据</li>
+    </ul>
+    <!-- 基础数据子菜单 -->
+    <ul class="sub-nav-menu" id="basic-data-submenu" style="display:none;">
+        <li class="sub-nav-item" onclick="showSpotManagement()">景点信息管理</li>
+        <li class="sub-nav-item" onclick="showOrderManagement()">景点订单管理</li>
+        <li class="sub-nav-item" onclick="showReviewManagement()">景点评价管理</li>
+        <li class="sub-nav-item" onclick="showProductManagement()">商品信息管理</li>
+        <li class="sub-nav-item" onclick="showHotelManagement()">酒店信息管理</li>
+    </ul>
+</div>
+
+<div class="main-content">
+    <div class="content-container" id="dashboard-content">
+        <div class="welcome-message">欢迎回来，管理员</div>
+
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-label">今日访问量</div>
+                <div class="stat-value">1,245</div>
+                <div class="stat-change">↑ 12% 较昨日</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">订单总数</div>
+                <div class="stat-value">8,763</div>
+                <div class="stat-change">↑ 5% 较上周</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">用户总数</div>
+                <div class="stat-value">3,421</div>
+                <div class="stat-change">↑ 8% 较上月</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-label">旅游景点</div>
+                <div class="stat-value">156</div>
+                <div class="stat-change">新增3个</div>
+            </div>
+        </div>
+
+        <!-- 这里可以添加更多内容，如图表、最近订单等 -->
+    </div>
+    <!-- 在main-content部分添加系统管理内容 -->
+    <div class="main-content">
+        <div class="content-container" id="dashboard-content">
+            <!-- 原有的首页内容 -->
+        </div>
+
+        <div class="content-container" id="system-management-content" style="display:none;">
+            <div class="welcome-message">系统管理</div>
+
+            <div class="tabs">
+                <button class="tab-button active" onclick="showTab('user-management')">用户管理</button>
+                <button class="tab-button" onclick="showTab('other-management')">其他管理</button>
+            </div>
+
+            <div id="user-management" class="tab-content">
+                <div class="action-bar">
+                    <button class="btn btn-primary" onclick="showCreateUserModal()">新建用户</button>
+                </div>
+
+                <table class="user-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>用户名</th>
+                        <th>角色</th>
+                        <th>积分</th>
+                        <th>操作</th>
+                    </tr>
+                    </thead>
+                    <tbody id="user-table-body">
+                    <!-- 用户数据将通过JavaScript动态加载 -->
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="other-management" class="tab-content" style="display:none;">
+                <!-- 其他管理内容 -->
+            </div>
+        </div>
+    </div>
+    <!-- 添加新建用户模态框 -->
+    <div id="create-user-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('create-user-modal')">&times;</span>
+            <h2>新建用户</h2>
+            <form id="create-user-form">
+                <div class="form-group">
+                    <label for="new-username">用户名</label>
+                    <input type="text" id="new-username" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-password">密码</label>
+                    <input type="password" id="new-password" required>
+                </div>
+                <div class="form-group">
+                    <label for="new-role">角色</label>
+                    <select id="new-role" required>
+                        <option value="USER">普通用户</option>
+                        <option value="ADMIN">管理员</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">创建</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 在system-management-content div中添加 -->
+    <div id="order-management" class="tab-content" style="display:none;">
+        <div class="action-bar">
+            <div class="search-box">
+                <input type="text" id="order-search" placeholder="输入用户名搜索订单">
+                <button onclick="searchOrders()">搜索</button>
+            </div>
+        </div>
+
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>订单ID</th>
+                <th>用户名</th>
+                <th>景点名称</th>
+                <th>订单时间</th>
+                <th>实际支付</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="order-table-body">
+            <!-- 订单数据将通过JavaScript动态加载 -->
+            </tbody>
+        </table>
+
+        <!-- 分页控件 -->
+        <div class="pagination" id="order-pagination">
+            <button onclick="changeOrderPage(-1)">上一页</button>
+            <span id="order-page-info">1/1</span>
+            <button onclick="changeOrderPage(1)">下一页</button>
+        </div>
+    </div>
+    <!-- 在main-content部分添加景点管理内容 -->
+    <div class="content-container" id="spot-management-content" style="display:none;">
+        <div class="welcome-message">景点信息管理</div>
+
+        <div class="action-bar">
+            <button class="btn btn-primary" onclick="showCreateSpotModal()">新增景点</button>
+            <div class="search-box" style="margin-left: 20px;">
+                <input type="text" id="spot-search" placeholder="输入景点名称搜索">
+                <button onclick="searchSpots()">搜索</button>
+            </div>
+        </div>
+
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>景点名称</th>
+                <th>图片</th>
+                <th>地区</th>
+                <th>分类</th>
+                <th>价格</th>
+                <th>创建时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="spot-table-body">
+            <!-- 景点数据将通过JavaScript动态加载 -->
+            </tbody>
+        </table>
+
+        <!-- 分页控件 -->
+        <div class="pagination" id="spot-pagination">
+            <button onclick="changeSpotPage(-1)">上一页</button>
+            <span id="spot-page-info">1/1</span>
+            <button onclick="changeSpotPage(1)">下一页</button>
+        </div>
+    </div>
+
+    <!-- 添加新建景点模态框 -->
+    <div id="create-spot-modal" class="modal">
+        <div class="modal-header" id="create-spot-modal-header">
+            <h2>新增景点</h2>
+            <span class="close" onclick="closeModal('create-spot-modal')">&times;</span>
+        </div>
+        <div class="modal-content">
+            <form id="create-spot-form">
+                <div class="form-group">
+                    <label for="spot-name">景点名称</label>
+                    <input type="text" id="spot-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="spot-image">图片URL</label>
+                    <input type="text" id="spot-image" required>
+                </div>
+                <div class="form-group">
+                    <label for="spot-description">描述</label>
+                    <textarea id="spot-description" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="spot-location">位置</label>
+                    <input type="text" id="spot-location" required>
+                </div>
+                <div class="form-group">
+                    <label for="spot-price">价格</label>
+                    <input type="number" id="spot-price" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="spot-category">分类</label>
+                    <select id="spot-category" required>
+                        <option value="scenery">风景景点</option>
+                        <option value="culture">文化景点</option>
+                        <option value="entertainment">游乐景点</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="spot-region">地区</label>
+                    <select id="spot-region" required>
+                        <option value="hangzhou">杭州</option>
+                        <option value="ningbo">宁波</option>
+                        <option value="wenzhou">温州</option>
+                        <option value="jiaxing">嘉兴</option>
+                        <option value="huzhou">湖州</option>
+                        <option value="shaoxing">绍兴</option>
+                        <option value="jinhua">金华</option>
+                        <option value="quzhou">衢州</option>
+                        <option value="zhoushan">舟山</option>
+                        <option value="taizhou">台州</option>
+                        <option value="lishui">丽水</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">保存</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 添加编辑景点模态框 -->
+    <div id="edit-spot-modal" class="modal">
+        <div class="modal-header" id="edit-spot-modal-header">
+            <h2>编辑景点</h2>
+            <span class="close" onclick="closeModal('edit-spot-modal')">&times;</span>
+        </div>
+        <div class="modal-content">
+            <form id="edit-spot-form">
+                <input type="hidden" id="edit-spot-id">
+                <div class="form-group">
+                    <label for="edit-spot-name">景点名称</label>
+                    <input type="text" id="edit-spot-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-spot-image">图片URL</label>
+                    <input type="text" id="edit-spot-image" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-spot-description">描述</label>
+                    <textarea id="edit-spot-description" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-spot-location">位置</label>
+                    <input type="text" id="edit-spot-location" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-spot-price">价格</label>
+                    <input type="number" id="edit-spot-price" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-spot-category">分类</label>
+                    <select id="edit-spot-category" required>
+                        <option value="scenery">风景景点</option>
+                        <option value="culture">文化景点</option>
+                        <option value="entertainment">游乐景点</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-spot-region">地区</label>
+                    <select id="edit-spot-region" required>
+                        <option value="hangzhou">杭州</option>
+                        <option value="ningbo">宁波</option>
+                        <option value="wenzhou">温州</option>
+                        <option value="jiaxing">嘉兴</option>
+                        <option value="huzhou">湖州</option>
+                        <option value="shaoxing">绍兴</option>
+                        <option value="jinhua">金华</option>
+                        <option value="quzhou">衢州</option>
+                        <option value="zhoushan">舟山</option>
+                        <option value="taizhou">台州</option>
+                        <option value="lishui">丽水</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">保存</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 评价管理标签页 -->
+    <div id="review-management" class="tab-content" style="display:none;">
+        <div class="action-bar">
+            <div class="search-box">
+                <input type="text" id="review-search" placeholder="输入景点名称搜索评价">
+                <button onclick="searchReviews()">搜索</button>
+            </div>
+        </div>
+
+        <!-- 景点评价分类展示 -->
+        <div class="review-categories" id="review-categories">
+            <!-- 动态加载的景点评价分类 -->
+        </div>
+    </div>
+    <div class="content-container" id="product-management-content" style="display:none;">
+        <div class="welcome-message">商品信息管理</div>
+
+        <div class="action-bar">
+            <div class="search-box">
+                <input type="text" id="product-search" placeholder="输入商品名称搜索">
+                <button onclick="searchProducts()">搜索</button>
+            </div>
+        </div>
+
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>商品名称</th>
+                <th>图片</th>
+                <th>价格(积分)</th>
+                <th>库存</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="product-table-body">
+            <!-- 商品数据将通过JavaScript动态加载 -->
+            </tbody>
+        </table>
+
+        <!-- 分页控件 -->
+        <div class="pagination" id="product-pagination">
+            <button onclick="changeProductPage(-1)">上一页</button>
+            <span id="product-page-info">1/1</span>
+            <button onclick="changeProductPage(1)">下一页</button>
+        </div>
+    </div>
+
+    <!-- 添加编辑商品模态框 -->
+    <div id="edit-product-modal" class="modal">
+        <div class="modal-header" id="edit-product-modal-header">
+            <h2>编辑商品</h2>
+            <span class="close" onclick="closeModal('edit-product-modal')">&times;</span>
+        </div>
+        <div class="modal-content">
+            <form id="edit-product-form">
+                <input type="hidden" id="edit-product-id">
+                <div class="form-group">
+                    <label for="edit-product-name">商品名称</label>
+                    <input type="text" id="edit-product-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-product-image">图片URL</label>
+                    <input type="text" id="edit-product-image" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-product-price">价格(积分)</label>
+                    <input type="number" id="edit-product-price" min="1" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-product-stock">库存</label>
+                    <input type="number" id="edit-product-stock" min="0" required>
+                </div>
+                <button type="submit" class="btn btn-primary">保存</button>
+            </form>
+        </div>
+    </div>
+    <!-- 酒店管理内容 -->
+    <div class="content-container" id="hotel-management-content" style="display:none;">
+        <div class="welcome-message">酒店信息管理</div>
+
+        <div class="action-bar">
+            <button class="btn btn-primary" onclick="showCreateHotelModal()">新增酒店</button>
+            <div class="search-box" style="margin-left: 20px;">
+                <input type="text" id="hotel-search" placeholder="输入酒店名称搜索">
+                <button onclick="searchHotels()">搜索</button>
+            </div>
+        </div>
+
+        <table class="data-table">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>酒店名称</th>
+                <th>图片</th>
+                <th>地区</th>
+                <th>星级</th>
+                <th>价格</th>
+                <th>标签</th>
+                <th>创建时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody id="hotel-table-body">
+            <!-- 酒店数据将通过JavaScript动态加载 -->
+            </tbody>
+        </table>
+
+        <!-- 分页控件 -->
+        <div class="pagination" id="hotel-pagination">
+            <button onclick="changeHotelPage(-1)">上一页</button>
+            <span id="hotel-page-info">1/1</span>
+            <button onclick="changeHotelPage(1)">下一页</button>
+        </div>
+    </div>
+    <!-- 添加新建酒店模态框 -->
+    <div id="create-hotel-modal" class="modal">
+        <div class="modal-header" id="create-hotel-modal-header">
+            <h2>新增酒店</h2>
+            <span class="close" onclick="closeModal('create-hotel-modal')">&times;</span>
+        </div>
+        <div class="modal-content">
+            <form id="create-hotel-form">
+                <div class="form-group">
+                    <label for="hotel-name">酒店名称</label>
+                    <input type="text" id="hotel-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="hotel-image">图片URL</label>
+                    <input type="text" id="hotel-image" required>
+                </div>
+                <div class="form-group">
+                    <label for="hotel-description">描述</label>
+                    <textarea id="hotel-description" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="hotel-location">位置</label>
+                    <input type="text" id="hotel-location" required>
+                </div>
+                <div class="form-group">
+                    <label for="hotel-price">价格</label>
+                    <input type="number" id="hotel-price" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="hotel-rating">星级</label>
+                    <select id="hotel-rating" required>
+                        <option value="3">经济型(3星)</option>
+                        <option value="4">舒适型(4星)</option>
+                        <option value="4.5">高档型(4.5星)</option>
+                        <option value="5">豪华型(5星)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="hotel-facilities">设施(逗号分隔)</label>
+                    <input type="text" id="hotel-facilities" placeholder="wifi,parking,pool,gym,restaurant">
+                </div>
+                <div class="form-group">
+                    <label for="hotel-tag">标签</label>
+                    <input type="text" id="hotel-tag" placeholder="精品酒店、豪华酒店等">
+                </div>
+                <div class="form-group">
+                    <label for="hotel-region">地区</label>
+                    <select id="hotel-region" required>
+                        <option value="hangzhou">杭州</option>
+                        <option value="ningbo">宁波</option>
+                        <option value="wenzhou">温州</option>
+                        <option value="jiaxing">嘉兴</option>
+                        <option value="huzhou">湖州</option>
+                        <option value="shaoxing">绍兴</option>
+                        <option value="jinhua">金华</option>
+                        <option value="quzhou">衢州</option>
+                        <option value="zhoushan">舟山</option>
+                        <option value="taizhou">台州</option>
+                        <option value="lishui">丽水</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">保存</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- 添加编辑酒店模态框 -->
+    <div id="edit-hotel-modal" class="modal">
+        <div class="modal-header" id="edit-hotel-modal-header">
+            <h2>编辑酒店</h2>
+            <span class="close" onclick="closeModal('edit-hotel-modal')">&times;</span>
+        </div>
+        <div class="modal-content">
+            <form id="edit-hotel-form">
+                <input type="hidden" id="edit-hotel-id">
+                <div class="form-group">
+                    <label for="edit-hotel-name">酒店名称</label>
+                    <input type="text" id="edit-hotel-name" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-hotel-image">图片URL</label>
+                    <input type="text" id="edit-hotel-image" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-hotel-description">描述</label>
+                    <textarea id="edit-hotel-description" rows="3" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="edit-hotel-location">位置</label>
+                    <input type="text" id="edit-hotel-location" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-hotel-price">价格</label>
+                    <input type="number" id="edit-hotel-price" min="0" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit-hotel-rating">星级</label>
+                    <select id="edit-hotel-rating" required>
+                        <option value="3">经济型(3星)</option>
+                        <option value="4">舒适型(4星)</option>
+                        <option value="4.5">高档型(4.5星)</option>
+                        <option value="5">豪华型(5星)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="edit-hotel-facilities">设施(逗号分隔)</label>
+                    <input type="text" id="edit-hotel-facilities" placeholder="wifi,parking,pool,gym,restaurant">
+                </div>
+                <div class="form-group">
+                    <label for="edit-hotel-tag">标签</label>
+                    <input type="text" id="edit-hotel-tag" placeholder="精品酒店、豪华酒店等">
+                </div>
+                <div class="form-group">
+                    <label for="edit-hotel-region">地区</label>
+                    <select id="edit-hotel-region" required>
+                        <option value="hangzhou">杭州</option>
+                        <option value="ningbo">宁波</option>
+                        <option value="wenzhou">温州</option>
+                        <option value="jiaxing">嘉兴</option>
+                        <option value="huzhou">湖州</option>
+                        <option value="shaoxing">绍兴</option>
+                        <option value="jinhua">金华</option>
+                        <option value="quzhou">衢州</option>
+                        <option value="zhoushan">舟山</option>
+                        <option value="taizhou">台州</option>
+                        <option value="lishui">丽水</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">保存</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 页面加载时检查登录状态并显示用户名
+    document.addEventListener('DOMContentLoaded', function() {
+        const isAdmin = localStorage.getItem('isAdmin') === 'true';
+        const adminUsername = localStorage.getItem('adminUsername');
+
+        if (!isAdmin || !adminUsername) {
+            // 未登录或不是管理员，跳转到登录页
+            window.location.href = 'login.html';
+            return;
+        }
+
+        // 显示管理员用户名
+        document.getElementById('adminUsername').textContent = adminUsername;
+
+        // 更新欢迎消息
+        const welcomeMessage = document.querySelector('.welcome-message');
+        if (welcomeMessage) {
+            welcomeMessage.textContent = `欢迎回来，${adminUsername}`;
+        }
+    });
+
+    // 退出登录
+    function logout() {
+        // 清除登录状态
+        localStorage.removeItem('isAdmin');
+        localStorage.removeItem('adminUsername');
+
+        // 跳转到登录页
+        window.location.href = 'login.html';
+    }
+    // 页面切换功能
+    function showDashboard() {
+        document.getElementById('dashboard-content').style.display = 'block';
+        document.getElementById('system-management-content').style.display = 'none';
+        updateNavItems('dashboard');
+    }
+
+    function showSystemManagement() {
+        document.getElementById('dashboard-content').style.display = 'none';
+        document.getElementById('system-management-content').style.display = 'block';
+        updateNavItems('system');
+        loadUsers(); // 加载用户数据
+    }
+
+    // 更新导航项状态
+    function updateNavItems(active) {
+        const navItems = document.querySelectorAll('.nav-item');
+        navItems.forEach(item => item.classList.remove('active'));
+
+        if (active === 'dashboard') {
+            navItems[0].classList.add('active');
+        } else if (active === 'system') {
+            navItems[1].classList.add('active');
+        } else {
+            navItems[2].classList.add('active');
+        }
+    }
+
+    // 标签页切换
+    function showTab(tabId) {
+        const tabContents = document.querySelectorAll('.tab-content');
+        tabContents.forEach(content => content.style.display = 'none');
+
+        const tabButtons = document.querySelectorAll('.tab-button');
+        tabButtons.forEach(button => button.classList.remove('active'));
+
+        document.getElementById(tabId).style.display = 'block';
+        event.currentTarget.classList.add('active');
+    }
+
+    // 用户管理功能
+    function loadUsers() {
+        fetch('/api/user/all')
+            .then(response => response.json())
+            .then(users => {
+                const tableBody = document.getElementById('user-table-body');
+                tableBody.innerHTML = '';
+
+                users.forEach(user => {
+                    const row = document.createElement('tr');
+
+                    row.innerHTML = `
+                        <td>${user.id}</td>
+                        <td>${user.username}</td>
+                        <td>
+                            <select class="role-select" data-user-id="${user.id}">
+                                <option value="USER" ${user.role === 'USER' ? 'selected' : ''}>普通用户</option>
+                                <option value="ADMIN" ${user.role === 'ADMIN' ? 'selected' : ''}>管理员</option>
+                            </select>
+                        </td>
+                        <td>${user.points}</td>
+                        <td>
+                            <button class="action-btn btn-primary" onclick="updateUserRole(${user.id})">保存</button>
+                        </td>
+                    `;
+
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('加载用户失败:', error));
+    }
+
+    function updateUserRole(userId) {
+        const roleSelect = document.querySelector(`.role-select[data-user-id="${userId}"]`);
+        const newRole = roleSelect.value;
+
+        fetch(`/api/user/${userId}/role`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ role: newRole })
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('用户角色更新成功');
+                    loadUsers(); // 刷新用户列表
+                } else {
+                    throw new Error('更新失败');
+                }
+            })
+            .catch(error => {
+                console.error('更新用户角色失败:', error);
+                alert('更新用户角色失败: ' + error.message);
+            });
+    }
+
+    // 新建用户功能
+    function showCreateUserModal() {
+        document.getElementById('create-user-modal').style.display = 'block';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    document.getElementById('create-user-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const username = document.getElementById('new-username').value;
+        const password = document.getElementById('new-password').value;
+        const role = document.getElementById('new-role').value;
+
+        fetch('/api/user/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password,
+                role: role
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('用户创建成功');
+                    closeModal('create-user-modal');
+                    loadUsers(); // 刷新用户列表
+                    document.getElementById('create-user-form').reset();
+                } else {
+                    throw new Error(data.message || '创建失败');
+                }
+            })
+            .catch(error => {
+                console.error('创建用户失败:', error);
+                alert('创建用户失败: ' + error.message);
+            });
+    });
+    // 显示基础数据管理
+    function showBasicDataManagement() {
+        document.getElementById('dashboard-content').style.display = 'none';
+        document.getElementById('system-management-content').style.display = 'none';
+        document.getElementById('basic-data-submenu').style.display = 'block';
+
+        // 默认显示第一个子菜单项（景点管理/订单页面）
+        showOrderManagement();
+
+        // 更新导航项状态
+        updateNavItems('basic-data');
+    }
+
+    // 订单管理相关变量
+    let currentOrderPage = 1;
+    const ordersPerPage = 10;
+    let totalOrders = 0;
+    let allOrders = [];
+
+    // 显示订单管理标签页
+    function showOrderManagement() {
+        // 隐藏其他内容
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.style.display = 'none';
+        });
+
+        // 显示订单管理页面
+        document.getElementById('order-management').style.display = 'block';
+
+        // 更新子菜单项状态
+        document.querySelectorAll('.sub-nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        event.currentTarget.classList.add('active');
+
+        // 加载订单数据
+        loadOrders();
+    }
+
+    // 加载订单数据
+    function loadOrders(searchUsername = '') {
+        let url = '/api/orders/all';
+        if (searchUsername) {
+            url += `?username=${encodeURIComponent(searchUsername)}`;
+        } else {
+            url += `?page=${currentOrderPage}&size=${ordersPerPage}`;
+        }
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                allOrders = data.content || data; // 适配分页和非分页返回
+                totalOrders = data.totalElements || data.length;
+
+                renderOrders(allOrders);
+                updateOrderPagination();
+            })
+            .catch(error => {
+                console.error('加载订单失败:', error);
+                alert('加载订单失败，请稍后重试');
+            });
+    }
+
+    // 渲染订单表格
+    function renderOrders(orders) {
+        const tbody = document.getElementById('order-table-body');
+        tbody.innerHTML = '';
+
+        if (orders.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td colspan="7" style="text-align:center;">没有找到订单数据</td>`;
+            tbody.appendChild(row);
+            return;
+        }
+
+        orders.forEach(order => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+            <td>${order.id}</td>
+            <td>${order.userName}</td>
+            <td>${order.spotName}</td>
+            <td>${new Date(order.orderTime).toLocaleString()}</td>
+            <td>¥${order.actualPrice.toFixed(2)}</td>
+            <td>${order.status === 'PAID' ? '已支付' : order.status === 'CANCELLED' ? '已取消' : order.status}</td>
+            <td>
+                <button class="action-btn btn-danger" onclick="deleteOrder(${order.id})">
+                    <i class="fas fa-trash"></i> 删除
+                </button>
+            </td>
+        `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // 搜索订单
+    function searchOrders() {
+        const searchInput = document.getElementById('order-search').value.trim();
+        currentOrderPage = 1;
+        loadOrders(searchInput);
+    }
+
+    // 删除订单
+    function deleteOrder(orderId) {
+        if (!confirm('确定要删除此订单吗？此操作不可恢复！')) {
+            return;
+        }
+
+        fetch(`/api/orders/${orderId}`, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('订单删除成功');
+                    loadOrders(document.getElementById('order-search').value.trim());
+                } else {
+                    throw new Error('删除失败');
+                }
+            })
+            .catch(error => {
+                console.error('删除订单失败:', error);
+                alert('删除订单失败: ' + error.message);
+            });
+    }
+    // 更新分页信息
+    function updateOrderPagination() {
+        const totalPages = Math.ceil(totalOrders / ordersPerPage);
+        document.getElementById('order-page-info').textContent = `${currentOrderPage}/${totalPages}`;
+
+        const prevBtn = document.querySelector('#order-pagination button:first-child');
+        const nextBtn = document.querySelector('#order-pagination button:last-child');
+
+        prevBtn.disabled = currentOrderPage <= 1;
+        nextBtn.disabled = currentOrderPage >= totalPages;
+    }
+
+    // 切换订单页
+    function changeOrderPage(delta) {
+        const newPage = currentOrderPage + delta;
+        const totalPages = Math.ceil(totalOrders / ordersPerPage);
+
+        if (newPage > 0 && newPage <= totalPages) {
+            currentOrderPage = newPage;
+            loadOrders();
+        }
+    }
+    // 显示评价管理
+    function showReviewManagement() {
+        // 隐藏其他内容
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.style.display = 'none';
+        });
+
+        // 显示评价管理页面
+        document.getElementById('review-management').style.display = 'block';
+
+        // 更新子菜单项状态
+        document.querySelectorAll('.sub-nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        event.currentTarget.classList.add('active');
+
+        // 加载评价数据
+        loadReviews();
+    }
+
+    // 加载评价数据（按景点分类）
+    function loadReviews(searchKeyword = '') {
+        let url = '/api/reviews/grouped-by-spot';
+        if (searchKeyword) {
+            url += `?search=${encodeURIComponent(searchKeyword)}`;
+        }
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+                renderReviews(data);
+            })
+            .catch(error => {
+                console.error('加载评价失败:', error);
+                alert('加载评价失败，请稍后重试');
+            });
+    }
+
+    // 渲染评价数据（按景点分组）
+    function renderReviews(reviewsBySpot) {
+        const container = document.getElementById('review-categories');
+        container.innerHTML = '';
+
+        if (!reviewsBySpot || reviewsBySpot.length === 0) {
+            container.innerHTML = '<div class="no-data">没有找到评价数据</div>';
+            return;
+        }
+
+        reviewsBySpot.forEach(spot => {
+            const category = document.createElement('div');
+            category.className = 'review-category';
+
+            category.innerHTML = `
+            <div class="review-category-header" onclick="toggleReviewList(this)">
+                <div class="review-category-title">
+                    ${spot.spotName}
+                </div>
+                <div class="review-category-count">
+                    ${spot.reviews.length}条评价
+                </div>
+            </div>
+            <div class="review-list">
+                ${spot.reviews.map(review => `
+                    <div class="review-item">
+                        <div class="review-user">${review.userName}</div>
+                        <div class="review-rating">${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}</div>
+                        <div class="review-content">${review.content}</div>
+                        <div class="review-meta">
+                            <span>${new Date(review.createdAt).toLocaleString()}</span>
+                            <span>字数: ${review.content.length}</span>
+                        </div>
+                        <div class="review-actions">
+                            <button class="btn btn-danger btn-sm" onclick="deleteReview(${review.id}, event)">
+                                <i class="fas fa-trash">删除</i>
+                            </button>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+
+            container.appendChild(category);
+        });
+    }
+
+    // 切换评价列表显示/隐藏
+    function toggleReviewList(header) {
+        const list = header.nextElementSibling;
+        list.style.display = list.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // 删除评价
+    function deleteReview(reviewId, event) {
+        event.stopPropagation(); // 阻止事件冒泡
+
+        if (!confirm('确定要删除此评价吗？')) {
+            return;
+        }
+
+        fetch(`/api/reviews/${reviewId}`, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('评价删除成功');
+                    loadReviews(document.getElementById('review-search').value.trim());
+                } else {
+                    throw new Error('删除失败');
+                }
+            })
+            .catch(error => {
+                console.error('删除评价失败:', error);
+                alert('删除评价失败: ' + error.message);
+            });
+    }
+
+    // 搜索评价
+    function searchReviews() {
+        const searchInput = document.getElementById('review-search').value.trim();
+        loadReviews(searchInput);
+    }
+    // 景点管理相关变量
+    let currentSpotPage = 1;
+    const spotsPerPage = 10;
+    let totalSpots = 0;
+
+    // 显示景点管理标签页
+    function showSpotManagement() {
+        // 隐藏其他内容
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.style.display = 'none';
+        });
+
+        // 显示景点管理页面
+        document.getElementById('spot-management-content').style.display = 'block';
+
+        // 更新子菜单项状态
+        document.querySelectorAll('.sub-nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        event.currentTarget.classList.add('active');
+
+        // 加载景点数据
+        loadSpots();
+    }
+
+    // 加载景点数据
+    function loadSpots(searchName = '') {
+        let url = '/api/index-spots/all';
+        if (searchName) {
+            url = `/api/index-spots/all?search=${encodeURIComponent(searchName)}`;
+        }
+
+        fetch(url)
+            .then(response => response.json())
+            .then(spots => {
+                renderSpots(spots);
+                updateSpotPagination();
+            })
+            .catch(error => {
+                console.error('加载景点失败:', error);
+                alert('加载景点失败，请稍后重试');
+            });
+    }
+
+    // 渲染景点表格
+    function renderSpots(spots) {
+        const tbody = document.getElementById('spot-table-body');
+        tbody.innerHTML = '';
+
+        if (spots.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td colspan="8" style="text-align:center;">没有找到景点数据</td>`;
+            tbody.appendChild(row);
+            return;
+        }
+
+        spots.forEach(spot => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+            <td>${spot.id}</td>
+            <td>${spot.name}</td>
+            <td><img src="${spot.imageUrl}" alt="${spot.name}" style="width: 80px; height: 60px; object-fit: cover;"></td>
+            <td>${spot.region}</td>
+            <td>${getCategoryName(spot.category)}</td>
+            <td>¥${spot.price}</td>
+            <td>${new Date(spot.createdAt).toLocaleString()}</td>
+            <td>
+                <button class="action-btn btn-primary" onclick="showEditSpotModal(${spot.id})">
+                    <i class="fas fa-edit"></i> 编辑
+                </button>
+                <button class="action-btn btn-danger" onclick="deleteSpot(${spot.id})">
+                    <i class="fas fa-trash"></i> 删除
+                </button>
+            </td>
+        `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // 获取分类名称
+    function getCategoryName(category) {
+        switch(category) {
+            case 'scenery': return '风景景点';
+            case 'culture': return '文化景点';
+            case 'entertainment': return '游乐景点';
+            default: return category;
+        }
+    }
+
+    // 搜索景点
+    function searchSpots() {
+        const searchInput = document.getElementById('spot-search').value.trim();
+        currentSpotPage = 1;
+        loadSpots(searchInput);
+    }
+
+    // 更新分页信息
+    function updateSpotPagination() {
+        const totalPages = Math.ceil(totalSpots / spotsPerPage);
+        document.getElementById('spot-page-info').textContent = `${currentSpotPage}/${totalPages}`;
+
+        const prevBtn = document.querySelector('#spot-pagination button:first-child');
+        const nextBtn = document.querySelector('#spot-pagination button:last-child');
+
+        prevBtn.disabled = currentSpotPage <= 1;
+        nextBtn.disabled = currentSpotPage >= totalPages;
+    }
+
+    // 切换景点页
+    function changeSpotPage(delta) {
+        const newPage = currentSpotPage + delta;
+        const totalPages = Math.ceil(totalSpots / spotsPerPage);
+
+        if (newPage > 0 && newPage <= totalPages) {
+            currentSpotPage = newPage;
+            loadSpots(document.getElementById('spot-search').value.trim());
+        }
+    }
+
+    // 显示新建景点模态框
+    function showCreateSpotModal() {
+        document.getElementById('create-spot-modal').style.display = 'block';
+    }
+
+    // 显示编辑景点模态框
+    function showEditSpotModal(spotId) {
+        fetch(`/api/index-spots/${spotId}`)
+            .then(response => response.json())
+            .then(spot => {
+                document.getElementById('edit-spot-id').value = spot.id;
+                document.getElementById('edit-spot-name').value = spot.name;
+                document.getElementById('edit-spot-image').value = spot.imageUrl;
+                document.getElementById('edit-spot-description').value = spot.description;
+                document.getElementById('edit-spot-location').value = spot.location;
+                document.getElementById('edit-spot-price').value = spot.price;
+                document.getElementById('edit-spot-category').value = spot.category;
+                document.getElementById('edit-spot-region').value = spot.region;
+
+                document.getElementById('edit-spot-modal').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('获取景点详情失败:', error);
+                alert('获取景点详情失败');
+            });
+    }
+
+    // 删除景点
+    function deleteSpot(spotId) {
+        if (!confirm('确定要删除此景点吗？此操作不可恢复！')) {
+            return;
+        }
+
+        fetch(`/api/index-spots/${spotId}`, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('景点删除成功');
+                    loadSpots(document.getElementById('spot-search').value.trim());
+                } else {
+                    throw new Error('删除失败');
+                }
+            })
+            .catch(error => {
+                console.error('删除景点失败:', error);
+                alert('删除景点失败: ' + error.message);
+            });
+    }
+
+    // 处理新建景点表单提交
+    document.getElementById('create-spot-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const spotData = {
+            name: document.getElementById('spot-name').value,
+            imageUrl: document.getElementById('spot-image').value,
+            description: document.getElementById('spot-description').value,
+            location: document.getElementById('spot-location').value,
+            price: parseInt(document.getElementById('spot-price').value),
+            category: document.getElementById('spot-category').value,
+            region: document.getElementById('spot-region').value,
+            createdAt: new Date().toISOString()
+        };
+
+        fetch('/api/index-spots', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(spotData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert('景点创建成功');
+                closeModal('create-spot-modal');
+                document.getElementById('create-spot-form').reset();
+                loadSpots();
+            })
+            .catch(error => {
+                console.error('创建景点失败:', error);
+                alert('创建景点失败: ' + error.message);
+            });
+    });
+
+    // 处理编辑景点表单提交
+    document.getElementById('edit-spot-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const spotId = document.getElementById('edit-spot-id').value;
+        const spotData = {
+            name: document.getElementById('edit-spot-name').value,
+            imageUrl: document.getElementById('edit-spot-image').value,
+            description: document.getElementById('edit-spot-description').value,
+            location: document.getElementById('edit-spot-location').value,
+            price: parseInt(document.getElementById('edit-spot-price').value),
+            category: document.getElementById('edit-spot-category').value,
+            region: document.getElementById('edit-spot-region').value
+        };
+
+        fetch(`/api/index-spots/${spotId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(spotData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('景点更新成功');
+                    closeModal('edit-spot-modal');
+                    loadSpots(document.getElementById('spot-search').value.trim());
+                } else {
+                    throw new Error('更新失败');
+                }
+            })
+            .catch(error => {
+                console.error('更新景点失败:', error);
+                alert('更新景点失败: ' + error.message);
+            });
+    });
+    // 拖动功能实现
+    function makeDraggable(modalId, headerId) {
+        const modal = document.getElementById(modalId);
+        const header = document.getElementById(headerId);
+
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        header.addEventListener('mousedown', (e) => {
+            isDragging = true;
+
+            // 计算鼠标位置与模态框位置的偏移量
+            const modalRect = modal.getBoundingClientRect();
+            offsetX = e.clientX - modalRect.left;
+            offsetY = e.clientY - modalRect.top;
+
+            // 添加拖动样式
+            modal.classList.add('modal-dragging');
+
+            e.preventDefault();
+        });
+
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            // 计算新位置
+            let left = e.clientX - offsetX;
+            let top = e.clientY - offsetY;
+
+            // 限制在视窗范围内
+            const modalWidth = modal.offsetWidth;
+            const modalHeight = modal.offsetHeight;
+
+            left = Math.max(0, Math.min(left, window.innerWidth - modalWidth));
+            top = Math.max(0, Math.min(top, window.innerHeight - modalHeight));
+
+            // 应用新位置
+            modal.style.position = 'absolute';
+            modal.style.left = `${left}px`;
+            modal.style.top = `${top}px`;
+            modal.style.margin = '0';
+            modal.style.transform = 'none';
+        });
+
+        document.addEventListener('mouseup', () => {
+            isDragging = false;
+            modal.classList.remove('modal-dragging');
+        });
+    }
+
+    // 初始化拖动功能
+    document.addEventListener('DOMContentLoaded', function() {
+        makeDraggable('create-spot-modal', 'create-spot-modal-header');
+        makeDraggable('edit-spot-modal', 'edit-spot-modal-header');
+    });
+
+    // 修改显示模态框的函数，确保位置正确
+    function showCreateSpotModal() {
+        const modal = document.getElementById('create-spot-modal');
+        modal.style.display = 'block';
+        // 重置位置
+        modal.style.position = 'fixed';
+        modal.style.left = '';
+        modal.style.top = '';
+        modal.style.margin = '10% auto';
+        modal.style.transform = '';
+    }
+
+    function showEditSpotModal(spotId) {
+        const modal = document.getElementById('edit-spot-modal');
+        modal.style.display = 'block';
+        // 重置位置
+        modal.style.position = 'fixed';
+        modal.style.left = '';
+        modal.style.top = '';
+        modal.style.margin = '10% auto';
+        modal.style.transform = '';
+
+        // 原有获取景点数据的代码保持不变
+        fetch(`/api/index-spots/${spotId}`)
+            .then(response => response.json())
+            .then(spot => {
+                document.getElementById('edit-spot-id').value = spot.id;
+                document.getElementById('edit-spot-name').value = spot.name;
+                document.getElementById('edit-spot-image').value = spot.imageUrl;
+                document.getElementById('edit-spot-description').value = spot.description;
+                document.getElementById('edit-spot-location').value = spot.location;
+                document.getElementById('edit-spot-price').value = spot.price;
+                document.getElementById('edit-spot-category').value = spot.category;
+                document.getElementById('edit-spot-region').value = spot.region;
+            })
+            .catch(error => {
+                console.error('获取景点详情失败:', error);
+                alert('获取景点详情失败');
+            });
+    }
+    // 商品管理相关变量
+    let currentProductPage = 1;
+    const productsPerPage = 10;
+    let totalProducts = 0;
+
+    // 显示商品管理标签页
+    function showProductManagement() {
+        // 隐藏其他内容
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.style.display = 'none';
+        });
+
+        // 显示商品管理页面
+        document.getElementById('product-management-content').style.display = 'block';
+
+        // 更新子菜单项状态
+        document.querySelectorAll('.sub-nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        event.currentTarget.classList.add('active');
+
+        // 加载商品数据
+        loadProducts();
+    }
+
+    // 加载商品数据
+    function loadProducts(searchName = '') {
+        let url = '/api/products';
+        if (searchName) {
+            url += `?search=${encodeURIComponent(searchName)}`;
+        }
+
+        fetch(url)
+            .then(response => response.json())
+            .then(products => {
+                renderProducts(products);
+                updateProductPagination();
+            })
+            .catch(error => {
+                console.error('加载商品失败:', error);
+                alert('加载商品失败，请稍后重试');
+            });
+    }
+
+    // 渲染商品表格
+    function renderProducts(products) {
+        const tbody = document.getElementById('product-table-body');
+        tbody.innerHTML = '';
+
+        if (products.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td colspan="6" style="text-align:center;">没有找到商品数据</td>`;
+            tbody.appendChild(row);
+            return;
+        }
+
+        products.forEach(product => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+            <td>${product.id}</td>
+            <td>${product.name}</td>
+            <td><img src="${product.imageUrl}" alt="${product.name}" style="width: 80px; height: 60px; object-fit: cover;"></td>
+            <td>${product.price}</td>
+            <td>${product.stock}</td>
+            <td>
+                <button class="action-btn btn-primary" onclick="showEditProductModal(${product.id})">
+                    <i class="fas fa-edit"></i> 编辑
+                </button>
+            </td>
+        `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // 搜索商品
+    function searchProducts() {
+        const searchInput = document.getElementById('product-search').value.trim();
+        currentProductPage = 1;
+        loadProducts(searchInput);
+    }
+
+    // 更新分页信息
+    function updateProductPagination() {
+        const totalPages = Math.ceil(totalProducts / productsPerPage);
+        document.getElementById('product-page-info').textContent = `${currentProductPage}/${totalPages}`;
+
+        const prevBtn = document.querySelector('#product-pagination button:first-child');
+        const nextBtn = document.querySelector('#product-pagination button:last-child');
+
+        prevBtn.disabled = currentProductPage <= 1;
+        nextBtn.disabled = currentProductPage >= totalPages;
+    }
+
+    // 切换商品页
+    function changeProductPage(delta) {
+        const newPage = currentProductPage + delta;
+        const totalPages = Math.ceil(totalProducts / productsPerPage);
+
+        if (newPage > 0 && newPage <= totalPages) {
+            currentProductPage = newPage;
+            loadProducts(document.getElementById('product-search').value.trim());
+        }
+    }
+
+    // 显示编辑商品模态框
+    function showEditProductModal(productId) {
+        fetch(`/api/products/${productId}`)
+            .then(response => response.json())
+            .then(product => {
+                document.getElementById('edit-product-id').value = product.id;
+                document.getElementById('edit-product-name').value = product.name;
+                document.getElementById('edit-product-image').value = product.imageUrl;
+                document.getElementById('edit-product-price').value = product.price;
+                document.getElementById('edit-product-stock').value = product.stock;
+
+                document.getElementById('edit-product-modal').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('获取商品详情失败:', error);
+                alert('获取商品详情失败');
+            });
+    }
+
+    // 处理编辑商品表单提交
+    document.getElementById('edit-product-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const productId = document.getElementById('edit-product-id').value;
+        const productData = {
+            name: document.getElementById('edit-product-name').value,
+            imageUrl: document.getElementById('edit-product-image').value,
+            price: parseInt(document.getElementById('edit-product-price').value),
+            stock: parseInt(document.getElementById('edit-product-stock').value)
+        };
+
+        fetch(`/api/products/${productId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(productData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('商品更新成功');
+                    closeModal('edit-product-modal');
+                    loadProducts(document.getElementById('product-search').value.trim());
+                } else {
+                    throw new Error('更新失败');
+                }
+            })
+            .catch(error => {
+                console.error('更新商品失败:', error);
+                alert('更新商品失败: ' + error.message);
+            });
+    });
+    // 关闭模态框函数保持不变
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    // 页面加载时显示首页
+    document.addEventListener('DOMContentLoaded', function() {
+        showDashboard();
+    });
+    // 酒店管理相关变量
+    let currentHotelPage = 1;
+    const hotelsPerPage = 10;
+    let totalHotels = 0;
+
+    // 显示酒店管理标签页
+    function showHotelManagement() {
+        // 隐藏其他内容
+        document.querySelectorAll('.tab-content').forEach(tab => {
+            tab.style.display = 'none';
+        });
+
+        // 显示酒店管理页面
+        document.getElementById('hotel-management-content').style.display = 'block';
+
+        // 更新子菜单项状态
+        document.querySelectorAll('.sub-nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        event.currentTarget.classList.add('active');
+
+        // 加载酒店数据
+        loadHotels();
+    }
+
+    // 加载酒店数据
+    function loadHotels(searchName = '') {
+        let url = '/api/hotels';
+        if (searchName) {
+            url += `?search=${encodeURIComponent(searchName)}`;
+        }
+
+        fetch(url)
+            .then(response => response.json())
+            .then(hotels => {
+                renderHotels(hotels);
+                updateHotelPagination();
+            })
+            .catch(error => {
+                console.error('加载酒店失败:', error);
+                alert('加载酒店失败，请稍后重试');
+            });
+    }
+
+    // 渲染酒店表格
+    function renderHotels(hotels) {
+        const tbody = document.getElementById('hotel-table-body');
+        tbody.innerHTML = '';
+
+        if (hotels.length === 0) {
+            const row = document.createElement('tr');
+            row.innerHTML = `<td colspan="9" style="text-align:center;">没有找到酒店数据</td>`;
+            tbody.appendChild(row);
+            return;
+        }
+
+        hotels.forEach(hotel => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+            <td>${hotel.id}</td>
+            <td>${hotel.name}</td>
+            <td><img src="${hotel.imageUrl}" alt="${hotel.name}" style="width: 80px; height: 60px; object-fit: cover;"></td>
+            <td>${getRegionName(hotel.region)}</td>
+            <td>${hotel.rating}星</td>
+            <td>¥${hotel.price}</td>
+            <td>${hotel.tag || '-'}</td>
+            <td>${new Date(hotel.createdAt).toLocaleString()}</td>
+            <td>
+                <button class="action-btn btn-primary" onclick="showEditHotelModal(${hotel.id})">
+                    <i class="fas fa-edit"></i> 编辑
+                </button>
+                <button class="action-btn btn-danger" onclick="deleteHotel(${hotel.id})">
+                    <i class="fas fa-trash"></i> 删除
+                </button>
+            </td>
+        `;
+            tbody.appendChild(row);
+        });
+    }
+
+    // 获取地区名称
+    function getRegionName(region) {
+        const regions = {
+            'hangzhou': '杭州',
+            'ningbo': '宁波',
+            'wenzhou': '温州',
+            'jiaxing': '嘉兴',
+            'huzhou': '湖州',
+            'shaoxing': '绍兴',
+            'jinhua': '金华',
+            'quzhou': '衢州',
+            'zhoushan': '舟山',
+            'taizhou': '台州',
+            'lishui': '丽水'
+        };
+        return regions[region] || region;
+    }
+
+    // 搜索酒店
+    function searchHotels() {
+        const searchInput = document.getElementById('hotel-search').value.trim();
+        currentHotelPage = 1;
+        loadHotels(searchInput);
+    }
+
+    // 更新分页信息
+    function updateHotelPagination() {
+        const totalPages = Math.ceil(totalHotels / hotelsPerPage);
+        document.getElementById('hotel-page-info').textContent = `${currentHotelPage}/${totalPages}`;
+
+        const prevBtn = document.querySelector('#hotel-pagination button:first-child');
+        const nextBtn = document.querySelector('#hotel-pagination button:last-child');
+
+        prevBtn.disabled = currentHotelPage <= 1;
+        nextBtn.disabled = currentHotelPage >= totalPages;
+    }
+
+    // 切换酒店页
+    function changeHotelPage(delta) {
+        const newPage = currentHotelPage + delta;
+        const totalPages = Math.ceil(totalHotels / hotelsPerPage);
+
+        if (newPage > 0 && newPage <= totalPages) {
+            currentHotelPage = newPage;
+            loadHotels(document.getElementById('hotel-search').value.trim());
+        }
+    }
+
+    // 显示新建酒店模态框
+    function showCreateHotelModal() {
+        document.getElementById('create-hotel-modal').style.display = 'block';
+    }
+
+    // 显示编辑酒店模态框
+    function showEditHotelModal(hotelId) {
+        fetch(`/api/hotels/${hotelId}`)
+            .then(response => response.json())
+            .then(hotel => {
+                document.getElementById('edit-hotel-id').value = hotel.id;
+                document.getElementById('edit-hotel-name').value = hotel.name;
+                document.getElementById('edit-hotel-image').value = hotel.imageUrl;
+                document.getElementById('edit-hotel-description').value = hotel.description;
+                document.getElementById('edit-hotel-location').value = hotel.location;
+                document.getElementById('edit-hotel-price').value = hotel.price;
+                document.getElementById('edit-hotel-rating').value = hotel.rating;
+                document.getElementById('edit-hotel-facilities').value = hotel.facilities || '';
+                document.getElementById('edit-hotel-tag').value = hotel.tag || '';
+                document.getElementById('edit-hotel-region').value = hotel.region;
+
+                document.getElementById('edit-hotel-modal').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('获取酒店详情失败:', error);
+                alert('获取酒店详情失败');
+            });
+    }
+
+    // 删除酒店
+    function deleteHotel(hotelId) {
+        if (!confirm('确定要删除此酒店吗？此操作不可恢复！')) {
+            return;
+        }
+
+        fetch(`/api/hotels/${hotelId}`, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('酒店删除成功');
+                    loadHotels(document.getElementById('hotel-search').value.trim());
+                } else {
+                    throw new Error('删除失败');
+                }
+            })
+            .catch(error => {
+                console.error('删除酒店失败:', error);
+                alert('删除酒店失败: ' + error.message);
+            });
+    }
+
+    // 处理新建酒店表单提交
+    document.getElementById('create-hotel-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const hotelData = {
+            name: document.getElementById('hotel-name').value,
+            imageUrl: document.getElementById('hotel-image').value,
+            description: document.getElementById('hotel-description').value,
+            location: document.getElementById('hotel-location').value,
+            price: parseInt(document.getElementById('hotel-price').value),
+            rating: parseFloat(document.getElementById('hotel-rating').value),
+            facilities: document.getElementById('hotel-facilities').value,
+            tag: document.getElementById('hotel-tag').value,
+            region: document.getElementById('hotel-region').value,
+            createdAt: new Date().toISOString()
+        };
+
+        fetch('/api/hotels', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(hotelData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                alert('酒店创建成功');
+                closeModal('create-hotel-modal');
+                document.getElementById('create-hotel-form').reset();
+                loadHotels();
+            })
+            .catch(error => {
+                console.error('创建酒店失败:', error);
+                alert('创建酒店失败: ' + error.message);
+            });
+    });
+
+    // 处理编辑酒店表单提交
+    document.getElementById('edit-hotel-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const hotelId = document.getElementById('edit-hotel-id').value;
+        const hotelData = {
+            name: document.getElementById('edit-hotel-name').value,
+            imageUrl: document.getElementById('edit-hotel-image').value,
+            description: document.getElementById('edit-hotel-description').value,
+            location: document.getElementById('edit-hotel-location').value,
+            price: parseInt(document.getElementById('edit-hotel-price').value),
+            rating: parseFloat(document.getElementById('edit-hotel-rating').value),
+            facilities: document.getElementById('edit-hotel-facilities').value,
+            tag: document.getElementById('edit-hotel-tag').value,
+            region: document.getElementById('edit-hotel-region').value
+        };
+
+        fetch(`/api/hotels/${hotelId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(hotelData)
+        })
+            .then(response => {
+                if (response.ok) {
+                    alert('酒店更新成功');
+                    closeModal('edit-hotel-modal');
+                    loadHotels(document.getElementById('hotel-search').value.trim());
+                } else {
+                    throw new Error('更新失败');
+                }
+            })
+            .catch(error => {
+                console.error('更新酒店失败:', error);
+                alert('更新酒店失败: ' + error.message);
+            });
+    });
+    // 初始化拖动功能（添加酒店模态框）
+    document.addEventListener('DOMContentLoaded', function() {
+        makeDraggable('create-hotel-modal', 'create-hotel-modal-header');
+        makeDraggable('edit-hotel-modal', 'edit-hotel-modal-header');
+    });
+</script>
+
+</body>
+</html>

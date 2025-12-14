@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>注册 - 畅游浙江</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    :root {
+      --primary: #3498db;
+      --secondary: #2ecc71;
+      --accent: #e74c3c;
+      --dark: #2c3e50;
+      --light: #ecf0f1;
+      --text: #34495e;
+      --text-light: #7f8c8d;
+      --points: #f39c12;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+    }
+
+    body {
+      background-color: #f8f9fa;
+      color: var(--text);
+      line-height: 1.6;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* 顶部导航栏 - 与主站一致 */
+    .navbar {
+      background-color: var(--dark);
+      padding: 0.8rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      display: flex;
+      align-items: center;
+    }
+
+    .logo i {
+      margin-right: 0.5rem;
+      color: var(--primary);
+    }
+
+    /* 注册主体 */
+    .register-container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      background: linear-gradient(rgba(255,255,255,0.9), rgba(255,255,255,0.9)),
+      url('https://images.unsplash.com/photo-1505228395891-9a51e7e86bf6?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center;
+      background-size: cover;
+    }
+
+    .register-card {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 450px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+    }
+
+    .register-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+    }
+
+    .register-header {
+      background-color: var(--dark);
+      color: white;
+      padding: 1.5rem;
+      text-align: center;
+      position: relative;
+    }
+
+    .register-header h2 {
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .register-header p {
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .register-body {
+      padding: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--dark);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 1rem;
+      transition: all 0.3s;
+    }
+
+    .form-control:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+      outline: none;
+    }
+
+    .input-icon {
+      position: absolute;
+      right: 1rem;
+      top: 2.7rem;
+      color: var(--text-light);
+    }
+
+    .btn {
+      width: 100%;
+      padding: 0.8rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background-color: var(--secondary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #27ae60;
+    }
+
+    .register-footer {
+      text-align: center;
+      padding: 1rem;
+      border-top: 1px solid #eee;
+      font-size: 0.9rem;
+      color: var(--text-light);
+    }
+
+    .register-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .register-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .password-strength {
+      margin-top: 0.5rem;
+      height: 4px;
+      background-color: #eee;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .strength-meter {
+      height: 100%;
+      width: 0;
+      background-color: #e74c3c;
+      transition: width 0.3s, background-color 0.3s;
+    }
+
+    .terms-checkbox {
+      display: flex;
+      align-items: center;
+      margin: 1.5rem 0;
+    }
+
+    .terms-checkbox input {
+      margin-right: 0.8rem;
+    }
+
+    .terms-text {
+      font-size: 0.85rem;
+      color: var(--text-light);
+    }
+
+    .terms-text a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+
+    .terms-text a:hover {
+      text-decoration: underline;
+    }
+
+    /* 响应式设计 */
+    @media (max-width: 768px) {
+      .register-container {
+        padding: 1rem;
+      }
+
+      .register-card {
+        max-width: 100%;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- 顶部导航栏 -->
+<nav class="navbar">
+  <div class="logo">
+    <i class="fas fa-map-marked-alt"></i>
+    <span>畅游浙江</span>
+  </div>
+</nav>
+
+<!-- 注册主体 -->
+<div class="register-container">
+  <div class="register-card">
+    <div class="register-header">
+      <h2>创建新账户</h2>
+      <p>加入畅游浙江，开启您的旅程</p>
+    </div>
+    <div class="register-body">
+      <div class="form-group">
+        <label for="username">用户名</label>
+        <input type="text" id="username" class="form-control" placeholder="请输入用户名">
+        <i class="fas fa-user input-icon"></i>
+      </div>
+      <div class="form-group">
+        <label for="password">密码</label>
+        <input type="password" id="password" class="form-control" placeholder="请输入密码" oninput="updatePasswordStrength()">
+        <i class="fas fa-lock input-icon"></i>
+        <div class="password-strength">
+          <div class="strength-meter" id="strength-meter"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="confirm-password">确认密码</label>
+        <input type="password" id="confirm-password" class="form-control" placeholder="请再次输入密码">
+        <i class="fas fa-check-circle input-icon"></i>
+      </div>
+
+      <div class="terms-checkbox">
+        <input type="checkbox" id="agree-terms">
+        <label for="agree-terms" class="terms-text">
+          我已阅读并同意<a href="#">服务条款</a>和<a href="#">隐私政策</a>
+        </label>
+      </div>
+
+      <button class="btn btn-primary" onclick="register()">
+        <i class="fas fa-user-plus"></i>
+        <span>立即注册</span>
+      </button>
+    </div>
+    <div class="register-footer">
+      已有账号？<a href="login.html">立即登录</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 密码强度检测
+  function updatePasswordStrength() {
+    const password = document.getElementById('password').value;
+    const meter = document.getElementById('strength-meter');
+    let strength = 0;
+
+    if (password.length > 0) strength += 20;
+    if (password.length >= 8) strength += 30;
+    if (/[A-Z]/.test(password)) strength += 15;
+    if (/[0-9]/.test(password)) strength += 15;
+    if (/[^A-Za-z0-9]/.test(password)) strength += 20;
+
+    meter.style.width = strength + '%';
+
+    if (strength < 40) {
+      meter.style.backgroundColor = '#e74c3c';
+    } else if (strength < 70) {
+      meter.style.backgroundColor = '#f39c12';
+    } else {
+      meter.style.backgroundColor = '#2ecc71';
+    }
+  }
+
+  // 注册功能
+  function register() {
+    const username = document.getElementById('username').value;
+    const password = document.getElementById('password').value;
+    const confirmPassword = document.getElementById('confirm-password').value;
+    const agreeTerms = document.getElementById('agree-terms').checked;
+
+    if (!agreeTerms) {
+      alert('请阅读并同意服务条款和隐私政策');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert('两次输入的密码不一致！');
+      return;
+    }
+
+    // 模拟注册请求
+    fetch('/api/user/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ username, password }),
+    })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                alert('注册成功！');
+                window.location.href = 'login.html';
+              } else {
+                alert('注册失败：' + data.message);
+              }
+            })
+            .catch(error => {
+              console.error('注册失败：', error);
+              alert('注册失败，请稍后再试');
+            });
+  }
+
+  // 监听回车键提交
+  document.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      register();
+    }
+  });
+</script>
+</body>
+</html>

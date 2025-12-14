@@ -1,0 +1,1516 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>旅游系统-畅游浙江</title>
+    <style>
+        /* 全局样式 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        ul {
+            list-style: none;
+        }
+
+        .container {
+            width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* 操作按钮样式 */
+        .spot-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .action-btn i {
+            font-size: 14px;
+        }
+
+        .review-btn {
+            background-color: #f0f7ff;
+            color: #3498db;
+            border: 1px solid #d6e4f0;
+        }
+
+        .review-btn:hover {
+            background-color: #e1f0ff;
+        }
+
+        .book-btn {
+            background-color: #2ecc71;
+            color: white;
+            border: none;
+        }
+
+        .book-btn:hover {
+            background-color: #27ae60;
+        }
+        /* 导航栏样式 */
+        header {
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #0066cc;
+        }
+
+        .logo span {
+            color: #ff6600;
+        }
+
+        .main-nav ul {
+            display: flex;
+        }
+
+        .main-nav li {
+            margin: 0 15px;
+            position: relative;
+        }
+
+        .main-nav a {
+            padding: 10px 0;
+            font-size: 16px;
+            transition: color 0.3s;
+        }
+
+        .main-nav a:hover {
+            color: #0066cc;
+        }
+
+        .main-nav li.active a {
+            color: #0066cc;
+            border-bottom: 2px solid #0066cc;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .user-actions a {
+            margin-left: 20px;
+            padding: 8px 15px;
+            border-radius: 4px;
+        }
+
+        .login-btn {
+            color: #0066cc;
+        }
+
+        .register-btn {
+            background-color: #0066cc;
+            color: white;
+        }
+
+        /* 轮播图样式 */
+        .banner {
+            height: 500px;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .slides {
+            display: flex;
+            height: 100%;
+            transition: transform 0.5s ease;
+        }
+
+        .slide {
+            min-width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slide-content {
+            position: absolute;
+            bottom: 80px;
+            left: 100px;
+            color: white;
+            max-width: 500px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        .slide-content h2 {
+            font-size: 36px;
+            margin-bottom: 15px;
+        }
+
+        .slide-content p {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+
+        .slide-btn {
+            display: inline-block;
+            padding: 10px 25px;
+            background-color: #ff6600;
+            color: white;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+
+        .slide-indicators {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.5);
+            margin: 0 8px;
+            cursor: pointer;
+        }
+
+        .indicator.active {
+            background-color: white;
+        }
+
+        /* 搜索框样式 */
+        .search-box {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-top: -50px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .search-form {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .search-btn {
+            padding: 12px 30px;
+            background-color: #ff6600;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* 热门目的地 */
+        .section-title {
+            font-size: 24px;
+            margin: 40px 0 20px;
+            position: relative;
+            padding-left: 15px;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            height: 20px;
+            width: 5px;
+            background-color: #0066cc;
+        }
+
+        .destinations {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .destination-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s;
+        }
+
+        .destination-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .destination-img {
+            height: 180px;
+            overflow: hidden;
+        }
+
+        .destination-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .destination-card:hover .destination-img img {
+            transform: scale(1.1);
+        }
+
+        .destination-info {
+            padding: 15px;
+        }
+
+        .destination-info h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .destination-info p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .price {
+            color: #ff6600;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        /* 特色旅游产品 */
+        .products {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .product-img {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .product-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: #ff6600;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .product-info {
+            padding: 15px;
+        }
+
+        .product-info h3 {
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .product-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-price .price {
+            color: #ff6600;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .book-btn {
+            padding: 8px 15px;
+            background-color: #0066cc;
+            color: white;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        /* 底部样式 */
+        footer {
+            background-color: #333;
+            color: #fff;
+            padding: 50px 0 20px;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-column h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 2px;
+            background-color: #ff6600;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a:hover {
+            color: #ff6600;
+        }
+
+        .contact-info p {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .contact-info i {
+            margin-right: 10px;
+            color: #ff6600;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #444;
+            color: #aaa;
+            font-size: 14px;
+        }
+        /* 用户信息区域样式 */
+        .user-info {
+            display: none; /* 默认隐藏 */
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-info.show {
+            display: flex; /* 登录后显示 */
+        }
+
+        .username {
+            font-weight: bold;
+            color: #0066cc;
+        }
+
+        .logout-btn {
+            padding: 5px 10px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        /* 市区导航栏容器 */
+        .region-nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eaeaea;
+            padding-bottom: 15px;
+        }
+        /* 市区导航栏主体 */
+        .region-nav {
+            overflow-x: auto;
+            padding-bottom: 5px; /* 为滚动条留空间 */
+        }
+
+        .region-list {
+            display: flex;
+            gap: 0; /* 使用边框代替间隙 */
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 市区导航项 */
+        .region-item {
+            position: relative;
+            margin-right: -1px; /* 解决边框重叠问题 */
+        }
+
+        .region-item a {
+            display: block;
+            padding: 10px 20px;
+            font-size: 15px;
+            color: #555;
+            text-decoration: none;
+            border: 1px solid #eaeaea;
+            background-color: #f9f9f9;
+            transition: all 0.3s ease;
+        }
+
+        /* 第一个和最后一个项的圆角 */
+        .region-item:first-child a {
+            border-radius: 4px 0 0 4px;
+        }
+
+        .region-item:last-child a {
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* 悬停和活动状态 */
+        .region-item a:hover {
+            color: #0066cc;
+            background-color: #f0f7ff;
+        }
+
+        .region-item.active a {
+            color: #0066cc;
+            background-color: #fff;
+            border-color: #eaeaea;
+            border-bottom-color: #fff;
+            font-weight: 500;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 显示更多链接 */
+        .show-more-link {
+            margin-left: 20px;
+            white-space: nowrap;
+            color: #0066cc;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .show-more-link:hover {
+            color: #ff6600;
+            text-decoration: underline;
+        }
+        /* AI 对话样式 */
+        .ai-chat-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        .ai-chat-button {
+            width: auto;
+            height: 60px;
+            border-radius: 30px;
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .ai-chat-button:hover {
+            background-color: #0055aa;
+            transform: scale(1.05);
+        }
+
+        .ai-button-text {
+            font-weight: bold;
+        }
+
+        .ai-chat-dialog {
+            position: absolute;
+            bottom: 80px;
+            right: 0;
+            width: 350px;
+            height: 500px;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .ai-chat-header {
+            padding: 15px;
+            background-color: #0066cc;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .ai-chat-header h3 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .ai-close-btn {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        .ai-chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: #f9f9f9;
+        }
+
+        .ai-message {
+            display: flex;
+            margin-bottom: 15px;
+        }
+
+        .ai-bot-message {
+            flex-direction: row;
+        }
+
+        .ai-user-message {
+            flex-direction: row-reverse;
+        }
+
+        .ai-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: #0066cc;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 10px;
+            flex-shrink: 0;
+        }
+
+        .ai-user-message .ai-avatar {
+            background-color: #ff6600;
+        }
+
+        .ai-content {
+            max-width: 70%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            background-color: white;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+            line-height: 1.5;
+        }
+
+        .ai-user-message .ai-content {
+            background-color: #0066cc;
+            color: white;
+        }
+
+        .ai-chat-input {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #eee;
+            background-color: white;
+        }
+
+        .ai-chat-input input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 20px;
+            outline: none;
+        }
+
+        .ai-chat-input input:focus {
+            border-color: #0066cc;
+        }
+
+        .ai-send-btn {
+            background-color: #0066cc;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-left: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 加载动画 */
+        .ai-typing-indicator {
+            display: flex;
+            padding: 10px 15px;
+        }
+
+        .ai-typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #ccc;
+            margin: 0 3px;
+            animation: ai-typing 1.4s infinite ease-in-out;
+        }
+
+        .ai-typing-dot:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .ai-typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .ai-typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+        /* 在现有CSS中添加以下样式 */
+        .destinations {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        /* 确保分类部分与热门目的地部分有足够间距 */
+        .container + .container {
+            margin-top: 40px;
+        }
+
+        @keyframes ai-typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-5px); }
+        }
+
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .region-nav-container {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .show-more-link {
+                margin: 15px 0 0 auto; /* 在移动端右对齐 */
+            }
+
+            .region-item a {
+                padding: 8px 15px;
+                font-size: 14px;
+            }
+            .ai-chat-container {
+                bottom: 20px;
+                right: 20px;
+            }
+
+            .ai-chat-button {
+                height: 50px;
+                padding: 0 15px;
+                font-size: 14px;
+            }
+
+            .ai-chat-dialog {
+                width: 300px;
+                height: 400px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 导航栏 -->
+<header>
+    <div class="container nav-container">
+        <div class="logo">畅游<span>浙江</span></div>
+        <nav class="main-nav">
+            <ul>
+                <li class="active"><a href="index.html">首页</a></li>
+                <li><a href="community.html">交流社区</a></li>
+                <li><a href="product.html">积分商城</a></li>
+                <li><a href="hotel.html">酒店推荐</a></li>
+                <li><a href="profile.html">个人中心</a></li>
+            </ul>
+        </nav>
+        <div class="user-actions" id="userActions">
+            <!-- 登录注册按钮 -->
+            <a href="login.html" class="login-btn" id="loginBtn">登录</a>
+            <a href="register.html" class="register-btn" id="registerBtn">注册</a>
+
+            <!-- 登录后显示的用户信息 - 确保这些ID与JS代码一致 -->
+            <div class="user-info" id="userInfo" style="display: none;">
+                <span class="welcome-text">欢迎，</span>
+                <span class="username" id="usernameDisplay"></span>
+                <a href="javascript:void(0);" class="logout-btn" id="logoutBtn">退出</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- 轮播图 -->
+<section class="banner">
+    <div class="slides">
+        <div class="slide">
+            <img src="/images/xihu.png" alt="旅游目的地1">
+            <div class="slide-content">
+                <h2>杭州西湖</h2>
+                <p>杭州西湖，中国著名淡水湖，世界文化遗产，以"西湖十景"闻名，四季风光如画，人文古迹众多，被誉为"人间天堂"。</p>
+                <a href="#" class="slide-btn">立即预订</a>
+            </div>
+        </div>
+        <div class="slide">
+            <img src="/images/yuehu.png" alt="旅游目的地2">
+            <div class="slide-content">
+                <h2>天一阁·月湖</h2>
+                <p>天一阁·月湖，书香伴水韵，中国现存最古藏书楼与江南园林的完美融合。</p>
+                <a href="#" class="slide-btn">查看详情</a>
+            </div>
+        </div>
+        <div class="slide">
+            <img src="/images/waitan.png" alt="旅游目的地3">
+            <div class="slide-content">
+                <h2>宁波老外滩</h2>
+                <p>宁波老外滩，百年商埠，中西合璧，江畔夜景璀璨，现代风情与历史底蕴交融。</p>
+                <a href="#" class="slide-btn">限时特惠</a>
+            </div>
+        </div>
+    </div>
+    <div class="slide-indicators">
+        <div class="indicator active"></div>
+        <div class="indicator"></div>
+        <div class="indicator"></div>
+    </div>
+</section>
+
+<!-- 搜索框 -->
+<div class="container">
+    <div class="search-box">
+        <form class="search-form">
+            <input type="text" class="search-input" placeholder="请输入目的地、景点或关键词">
+            <button type="submit" class="search-btn">搜索</button>
+        </form>
+    </div>
+</div>
+
+<!-- 热门目的地 -->
+<div class="container">
+    <!-- 在热门目的地section上方添加这个导航栏 -->
+    <div class="container">
+        <h2 class="section-title">热门目的地</h2>
+        <!-- 优化后的市区导航栏 -->
+        <div class="region-nav-container">
+            <nav class="region-nav">
+                <ul class="region-list">
+                    <li class="region-item active"><a href="javascript:void(0);" data-region="all">全部</a></li>
+                    <li class="region-item"><a href="javascript:void(0);" data-region="hangzhou">杭州</a></li>
+                    <li class="region-item"><a href="javascript:void(0);" data-region="ningbo">宁波</a></li>
+                    <li class="region-item"><a href="javascript:void(0);" data-region="wenzhou">温州</a></li>
+                    <li class="region-item"><a href="javascript:void(0);" data-region="jiaxing">嘉兴</a></li>
+                    <li class="region-item"><a href="javascript:void(0);" data-region="huzhou">湖州</a></li>
+                    <li class="region-item"><a href="javascript:void(0);" data-region="shaoxing">绍兴</a></li>
+                    <li class="region-item"><a href="javascript:void(0);" data-region="jinhua">金华</a></li>
+                    <li class="region-item"><a href="javascript:void(0);" data-region="quzhou">衢州</a></li>
+                    <li class="region-item"><a href="javascript:void(0);" data-region="zhoushan">舟山</a></li>
+                    <li class="region-item"><a href="javascript:void(0);" data-region="taizhou">台州</a></li>
+                    <li class="region-item"><a href="javascript:void(0);" data-region="lishui">丽水</a></li>
+                </ul>
+            </nav>
+            <a href="scenery.html" class="show-more-link">显示更多 &raquo;</a>
+        </div>
+
+        <div class="destinations" id="destinationsContainer">
+            <!-- 目的地卡片将通过JavaScript动态加载 -->
+        </div>
+    </div>
+    <div class="destinations">
+
+    </div>
+</div>
+<!-- 在特色旅游产品部分之前添加以下代码 -->
+<div class="container">
+    <h2 class="section-title">景点分类</h2>
+    <!-- 景点分类导航栏 -->
+    <div class="region-nav-container">
+        <nav class="region-nav">
+            <ul class="region-list">
+                <li class="region-item active"><a href="javascript:void(0);" data-category="all">全部景点</a></li>
+                <li class="region-item"><a href="javascript:void(0);" data-category="scenery">风景景点</a></li>
+                <li class="region-item"><a href="javascript:void(0);" data-category="culture">文化景点</a></li>
+                <li class="region-item"><a href="javascript:void(0);" data-category="entertainment">游乐景点</a></li>
+            </ul>
+        </nav>
+    </div>
+
+    <div class="destinations" id="categoryContainer">
+        <!-- 分类景点卡片将通过JavaScript动态加载 -->
+    </div>
+</div>
+<!-- 特色旅游产品 -->
+<div class="container">
+    <h2 class="section-title">特色旅游产品</h2>
+    <div class="products">
+        <div class="product-card">
+            <div class="product-img">
+                <img src="https://images.unsplash.com/photo-1503917988258-f87a78e3c995?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80" alt="马尔代夫自由行">
+                <span class="product-tag">热销</span>
+            </div>
+            <div class="product-info">
+                <h3>马尔代夫6天4晚自由行</h3>
+                <div class="product-meta">
+                    <span>出发地：北京/上海/广州</span>
+                    <span>满意度：98%</span>
+                </div>
+                <div class="product-price">
+                    <span class="price">¥8,999起</span>
+                    <a href="#" class="book-btn">预订</a>
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-img">
+                <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80" alt="巴黎浪漫之旅">
+                <span class="product-tag">新品</span>
+            </div>
+            <div class="product-info">
+                <h3>巴黎浪漫8日深度游</h3>
+                <div class="product-meta">
+                    <span>出发地：北京/上海</span>
+                    <span>满意度：96%</span>
+                </div>
+                <div class="product-price">
+                    <span class="price">¥12,999起</span>
+                    <a href="#" class="book-btn">预订</a>
+                </div>
+            </div>
+        </div>
+        <div class="product-card">
+            <div class="product-img">
+                <img src="https://images.unsplash.com/photo-1464037866556-6812c9d1c72e?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80" alt="日本樱花季">
+                <span class="product-tag">限时</span>
+            </div>
+            <div class="product-info">
+                <h3>日本樱花季6日游</h3>
+                <div class="product-meta">
+                    <span>出发地：全国多城市</span>
+                    <span>满意度：97%</span>
+                </div>
+                <div class="product-price">
+                    <span class="price">¥6,599起</span>
+                    <a href="#" class="book-btn">预订</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('页面加载完成，检查登录状态...');
+
+        // 获取所有需要的DOM元素
+        const elements = {
+            loginBtn: document.getElementById('loginBtn'),
+            registerBtn: document.getElementById('registerBtn'),
+            userInfo: document.getElementById('userInfo'),
+            usernameDisplay: document.getElementById('usernameDisplay'),
+            logoutBtn: document.getElementById('logoutBtn')
+        };
+
+        // 检查元素是否存在
+        for (const [key, element] of Object.entries(elements)) {
+            if (!element) {
+                console.error(`未找到元素: ${key}`);
+                return; // 如果关键元素缺失，停止执行
+            }
+        }
+
+        // 检查登录状态
+        const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+        const username = localStorage.getItem('username');
+
+        console.log('登录状态:', isLoggedIn, '用户名:', username);
+
+        if (isLoggedIn && username) {
+            console.log('用户已登录，显示用户信息');
+            // 显示用户信息
+            elements.loginBtn.style.display = 'none';
+            elements.registerBtn.style.display = 'none';
+            elements.userInfo.style.display = 'flex';
+            elements.usernameDisplay.textContent = username;
+
+            // 添加退出按钮事件
+            elements.logoutBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                console.log('用户点击退出');
+
+                // 清除本地存储
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('username');
+                localStorage.removeItem('userId');
+
+                // 刷新页面
+                window.location.reload();
+            });
+        } else {
+            console.log('用户未登录，显示登录按钮');
+            // 显示登录按钮
+            elements.loginBtn.style.display = 'inline-block';
+            elements.registerBtn.style.display = 'inline-block';
+            elements.userInfo.style.display = 'none';
+        }
+    });
+
+
+    // 获取所有景点数据
+    async function fetchAllSpots() {
+        try {
+            const response = await fetch('/api/index-spots/all');
+            return await response.json();
+        } catch (error) {
+            console.error('获取景点数据失败:', error);
+            return [];
+        }
+    }
+    // 按地区筛选景点
+    async function fetchSpotsByRegion(region) {
+        try {
+            const response = await fetch(`/api/index-spots/by-region?region=${region}`);
+            return await response.json();
+        } catch (error) {
+            console.error('按地区获取景点失败:', error);
+            return [];
+        }
+    }
+    // 按分类筛选景点
+    async function fetchSpotsByCategory(category) {
+        try {
+            const response = await fetch(`/api/index-spots/by-category?category=${category}`);
+            return await response.json();
+        } catch (error) {
+            console.error('按分类获取景点失败:', error);
+            return [];
+        }
+    }
+    // 跳转到评价页面
+    function goToComment(spotId) {
+        if (!localStorage.getItem('userId')) {
+            alert('请先登录！');
+            window.location.href = 'login.html';
+            return;
+        }
+        window.location.href = `comment.html?spotId=${spotId}`;
+    }
+
+    // 跳转到购票页面
+    function goToTicket(spotId) {
+        if (!localStorage.getItem('userId')) {
+            alert('请先登录！');
+            window.location.href = 'login.html';
+            return;
+        }
+        window.location.href = `ticket.html?spotId=${spotId}`;
+    }
+
+    // 跳转到评价详情页面
+    function goToReviews(spotId) {
+        window.location.href = `reviews.html?spotId=${spotId}`;
+    }
+    /**
+     * 渲染目的地卡片（非动态跳转方案）
+     * @param {string} region 地区筛选条件
+     */
+    async function renderDestinations(region = 'all') {
+        const container = document.getElementById('destinationsContainer');
+        container.innerHTML = '<div class="loading">加载中...</div>';
+
+        try {
+            const spots = await fetchSpotsByRegion(region);
+
+            container.innerHTML = '';
+
+            if (spots.length === 0) {
+                container.innerHTML = `
+                <div class="empty-state" style="grid-column: 1 / -1; text-align: center; padding: 40px 0;">
+                    <i class="fas fa-map-marked-alt" style="font-size: 3rem; color: #bdc3c7;"></i>
+                    <h3 style="color: #7f8c8d; margin-top: 15px;">该地区暂无景点数据</h3>
+                </div>
+            `;
+                return;
+            }
+
+            spots.forEach(spot => {
+                const card = document.createElement('div');
+                card.className = 'destination-card';
+
+                // 为特定景点设置固定详情页链接
+                let detailUrl = 'generic-details.html'; // 默认通用详情页
+                if (spot.name === '西湖') {
+                    detailUrl = 'xihu-details.html';
+                } else if (spot.name === '西溪湿地') {
+                    detailUrl = 'xixi-details.html';
+                } else if (spot.name === '千岛湖'){
+                    detailUrl = 'qiandao-details.html';
+                } else if (spot.name === '宋城'){
+                    detailUrl = 'songcheng-details.html';
+                }
+
+                card.innerHTML = `
+                <a href="${detailUrl}" class="spot-link" style="text-decoration: none; color: inherit; display: block;">
+                    <div class="destination-img">
+                        <img src="${spot.imageUrl || '/images/default-spot.jpg'}" alt="${spot.name}">
+                    </div>
+                    <div class="destination-info">
+                        <h3>${spot.name}</h3>
+                        <p>${spot.description || '暂无描述'}</p>
+                        <div class="price">¥${spot.price || '0'}起</div>
+                    </div>
+                </a>
+                <div class="spot-actions" style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="action-btn review-btn" onclick="goToComment(${spot.id})"
+                        style="padding: 8px 12px; background-color: #f0f7ff; color: #3498db; border: 1px solid #d6e4f0; border-radius: 4px; cursor: pointer;">
+                        <i class="far fa-comment"></i> 评价
+                    </button>
+                    <button class="action-btn book-btn" onclick="goToTicket(${spot.id})"
+                        style="padding: 8px 12px; background-color: #2ecc71; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        <i class="fas fa-ticket-alt"></i> 购票
+                    </button>
+                    <button class="action-btn review-btn" onclick="goToReviews(${spot.id})"
+                        style="padding: 8px 12px; background-color: #f0f7ff; color: #3498db; border: 1px solid #d6e4f0; border-radius: 4px; cursor: pointer;">
+                        <i class="far fa-comment"></i> 评价详情
+                    </button>
+                </div>
+            `;
+                container.appendChild(card);
+            });
+        } catch (error) {
+            console.error('加载景点数据失败:', error);
+            container.innerHTML = `
+            <div class="empty-state" style="grid-column: 1 / -1; text-align: center; padding: 40px 0;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #e74c3c;"></i>
+                <h3 style="color: #7f8c8d; margin-top: 15px;">加载景点失败，请稍后重试</h3>
+                <button class="refresh-btn" onclick="renderDestinations('${region}')"
+                    style="margin-top: 15px; padding: 8px 16px; background-color: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    <i class="fas fa-sync-alt"></i> 重新加载
+                </button>
+            </div>
+        `;
+        }
+    }
+
+    /**
+     * 渲染分类景点卡片（非动态跳转方案）
+     * @param {string} category 分类筛选条件
+     */
+    async function renderCategory(category = 'all') {
+        const container = document.getElementById('categoryContainer');
+        container.innerHTML = '<div class="loading">加载中...</div>';
+
+        try {
+            const spots = await fetchSpotsByCategory(category);
+
+            container.innerHTML = '';
+
+            if (spots.length === 0) {
+                container.innerHTML = `
+                <div class="empty-state" style="grid-column: 1 / -1; text-align: center; padding: 40px 0;">
+                    <i class="fas fa-map-marked-alt" style="font-size: 3rem; color: #bdc3c7;"></i>
+                    <h3 style="color: #7f8c8d; margin-top: 15px;">该分类暂无景点数据</h3>
+                </div>
+            `;
+                return;
+            }
+
+            spots.forEach(spot => {
+                const card = document.createElement('div');
+                card.className = 'destination-card';
+
+                // 为特定景点设置固定详情页链接
+                let detailUrl = 'generic-details.html'; // 默认通用详情页
+                if (spot.name === '西湖') {
+                    detailUrl = 'xihu-details.html';
+                } else if (spot.name === '西溪湿地') {
+                    detailUrl = 'xixi-details.html';
+                } else if (spot.name === '千岛湖'){
+                    detailUrl = 'qiandao-details.html';
+                } else if (spot.name === '宋城'){
+                    detailUrl = 'songcheng-details.html';
+                }
+
+                card.innerHTML = `
+                <a href="${detailUrl}" class="spot-link" style="text-decoration: none; color: inherit; display: block;">
+                    <div class="destination-img">
+                        <img src="${spot.imageUrl || '/images/default-spot.jpg'}" alt="${spot.name}">
+                    </div>
+                    <div class="destination-info">
+                        <h3>${spot.name}</h3>
+                        <p>${spot.description || '暂无描述'}</p>
+                        <div class="price">¥${spot.price || '0'}起</div>
+                    </div>
+                </a>
+                <div class="spot-actions" style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="action-btn review-btn" onclick="goToComment(${spot.id})"
+                        style="padding: 8px 12px; background-color: #f0f7ff; color: #3498db; border: 1px solid #d6e4f0; border-radius: 4px; cursor: pointer;">
+                        <i class="far fa-comment"></i> 评价
+                    </button>
+                    <button class="action-btn book-btn" onclick="goToTicket(${spot.id})"
+                        style="padding: 8px 12px; background-color: #2ecc71; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        <i class="fas fa-ticket-alt"></i> 购票
+                    </button>
+                    <button class="action-btn review-btn" onclick="goToReviews(${spot.id})"
+                        style="padding: 8px 12px; background-color: #f0f7ff; color: #3498db; border: 1px solid #d6e4f0; border-radius: 4px; cursor: pointer;">
+                        <i class="far fa-comment"></i> 评价详情
+                    </button>
+                </div>
+            `;
+                container.appendChild(card);
+            });
+        } catch (error) {
+            console.error('加载景点数据失败:', error);
+            container.innerHTML = `
+            <div class="empty-state" style="grid-column: 1 / -1; text-align: center; padding: 40px 0;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #e74c3c;"></i>
+                <h3 style="color: #7f8c8d; margin-top: 15px;">加载景点失败，请稍后重试</h3>
+                <button class="refresh-btn" onclick="renderCategory('${category}')"
+                    style="margin-top: 15px; padding: 8px 16px; background-color: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                    <i class="fas fa-sync-alt"></i> 重新加载
+                </button>
+            </div>
+        `;
+        }
+    }
+    // 初始化市区导航栏
+    function initRegionNav() {
+        const items = document.querySelectorAll('[data-region]');
+        items.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('[data-region]').forEach(i => {
+                    i.parentNode.classList.remove('active');
+                });
+                this.parentNode.classList.add('active');
+                const region = this.dataset.region;
+                renderDestinations(region);
+                document.querySelector('.show-more-link').href = `scenery.html?region=${region}`;
+            });
+        });
+    }
+
+    // 初始化分类导航栏
+    function initCategoryNav() {
+        const items = document.querySelectorAll('[data-category]');
+        items.forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('[data-category]').forEach(i => {
+                    i.parentNode.classList.remove('active');
+                });
+                this.parentNode.classList.add('active');
+                const category = this.dataset.category;
+                renderCategory(category);
+            });
+        });
+    }
+    // 页面加载时初始化
+    document.addEventListener('DOMContentLoaded', async () => {
+        initRegionNav();
+        await renderDestinations();
+        initCategoryNav();
+        await renderCategory();
+
+    });
+    // 轮播图功能
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const indicators = document.querySelectorAll('.indicator');
+
+    function showSlide(n) {
+        slides.forEach(slide => {
+            slide.style.transform = `translateX(-${n * 100}%)`;
+        });
+
+        indicators.forEach((indicator, index) => {
+            if (index === n) {
+                indicator.classList.add('active');
+            } else {
+                indicator.classList.remove('active');
+            }
+        });
+
+        currentSlide = n;
+    }
+
+    function nextSlide() {
+        currentSlide = (currentSlide + 1) % slides.length;
+        showSlide(currentSlide);
+    }
+
+    // 点击指示器切换
+    indicators.forEach((indicator, index) => {
+        indicator.addEventListener('click', () => {
+            showSlide(index);
+        });
+    });
+    // 自动轮播
+    setInterval(nextSlide, 5000);
+
+    // 替换为真实API的AI对话功能
+    document.addEventListener('DOMContentLoaded', function() {
+        const aiChatButton = document.getElementById('aiChatButton');
+        const aiChatDialog = document.getElementById('aiChatDialog');
+        const aiCloseBtn = document.getElementById('aiCloseBtn');
+        const aiChatMessages = document.getElementById('aiChatMessages');
+        const aiChatInput = document.getElementById('aiChatInput');
+        const aiSendBtn = document.getElementById('aiSendBtn');
+
+        // 切换对话框显示/隐藏
+        aiChatButton.addEventListener('click', function() {
+            aiChatDialog.style.display = aiChatDialog.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        aiCloseBtn.addEventListener('click', function() {
+            aiChatDialog.style.display = 'none';
+        });
+
+        // 发送消息
+        async function sendMessage() {
+            const message = aiChatInput.value.trim();
+            if (!message) return;
+
+            // 添加用户消息
+            addMessage(message, 'user');
+            aiChatInput.value = '';
+
+            // 显示AI正在输入
+            showTypingIndicator();
+
+            try {
+                // 调用真实API
+                const aiResponse = await getAIResponseFromAPI(message);
+                addMessage(aiResponse, 'bot');
+            } catch (error) {
+                console.error('API调用失败:', error);
+                addMessage("抱歉，暂时无法处理您的请求。请稍后再试。", 'bot');
+            } finally {
+                removeTypingIndicator();
+            }
+        }
+
+        // 点击发送按钮或按Enter键发送
+        aiSendBtn.addEventListener('click', sendMessage);
+        aiChatInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // 添加消息到对话框
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `ai-message ai-${sender}-message`;
+
+            messageDiv.innerHTML = `
+            <div class="ai-avatar">${sender === 'bot' ? 'AI' : '你'}</div>
+            <div class="ai-content">${text}</div>
+        `;
+
+            aiChatMessages.appendChild(messageDiv);
+            aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+        }
+
+        // 显示"正在输入"指示器
+        function showTypingIndicator() {
+            const typingDiv = document.createElement('div');
+            typingDiv.className = 'ai-message ai-bot-message';
+            typingDiv.id = 'typingIndicator';
+
+            typingDiv.innerHTML = `
+            <div class="ai-avatar">AI</div>
+            <div class="ai-typing-indicator">
+                <div class="ai-typing-dot"></div>
+                <div class="ai-typing-dot"></div>
+                <div class="ai-typing-dot"></div>
+            </div>
+        `;
+
+            aiChatMessages.appendChild(typingDiv);
+            aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+        }
+
+        // 移除"正在输入"指示器
+        function removeTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+
+        async function getAIResponseFromAPI(userMessage) {
+            const apiKey = 'bce-v3/ALTAK-1HjpsQyMe5Nauauw7mp7U/a2efba0137b3b09f9af4d1db10599bdf1d90cc78'; // 替换为您的百度API密钥
+            const apiUrl = 'https://aip.baidubce.com/rpc/2.0/ai_custom/v1/wenxinworkshop/chat/completions   ';
+
+            try {
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        messages: [
+                            {
+                                role: "user",
+                                content: userMessage
+                            }
+                        ]
+                    })
+                });
+
+                const data = await response.json();
+                return data.result;
+            } catch (error) {
+                console.error('API调用错误:', error);
+                throw error;
+            }
+        }
+
+        // 获取对话历史（用于上下文）
+        function getConversationHistory() {
+            const messages = [];
+            const messageElements = aiChatMessages.querySelectorAll('.ai-message');
+
+            messageElements.forEach(el => {
+                const isBot = el.classList.contains('ai-bot-message');
+                const content = el.querySelector('.ai-content').textContent;
+
+                messages.push({
+                    role: isBot ? "assistant" : "user",
+                    content: content
+                });
+            });
+
+            // 添加系统提示，让AI知道它的角色
+            if (messages.length === 0) {
+                messages.push({
+                    role: "system",
+                    content: "你是一个专业的浙江旅游助手，专门为用户提供浙江旅游相关的信息和建议。请用中文回答，保持友好和专业。"
+                });
+            }
+
+            return messages;
+        }
+
+        // 初始欢迎消息
+        setTimeout(() => {
+            addMessage("您好！我是浙江旅游AI助手，可以为您提供景点推荐、行程规划等服务。请问有什么可以帮您的？", 'bot');
+        }, 500);
+    });
+
+</script>
+<!-- AI 对话浮窗 -->
+<div class="ai-chat-container">
+    <button class="ai-chat-button" id="aiChatButton">
+        <div class="ai-avatar">AI</div>
+        <span class="ai-button-text">AI旅游助手</span>
+    </button>
+
+    <div class="ai-chat-dialog" id="aiChatDialog">
+        <div class="ai-chat-header">
+            <h3>AI旅游助手</h3>
+            <button class="ai-close-btn" id="aiCloseBtn">&times;</button>
+        </div>
+        <div class="ai-chat-messages" id="aiChatMessages">
+            <!-- 消息将在这里动态添加 -->
+        </div>
+        <div class="ai-chat-input">
+            <input type="text" id="aiChatInput" placeholder="输入您的问题...">
+            <button class="ai-send-btn" id="aiSendBtn">↵</button>
+        </div>
+    </div>
+</div>
+</body>
+</html>

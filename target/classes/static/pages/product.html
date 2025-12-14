@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>旅游系统-畅游浙江</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://unpkg.com/vue@3"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --accent: #e74c3c;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --points: #f39c12;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* 顶部导航栏 - 与主站一致 */
+        .navbar {
+            background-color: var(--dark);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .nav-btn i {
+            font-size: 1rem;
+        }
+
+        .points-btn {
+            background-color: var(--points);
+        }
+
+        /* 积分显示区域 */
+        .points-display {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            background-color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            z-index: 100;
+        }
+
+        .points-display i {
+            color: var(--points);
+            font-size: 1.2rem;
+        }
+
+        .points-value {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: var(--dark);
+        }
+
+        /* 商品容器 */
+        .product-container {
+            max-width: 1200px;
+            margin: 3rem auto;
+            padding: 0 1rem;
+        }
+
+        .section-title {
+            font-size: 1.8rem;
+            margin-bottom: 2rem;
+            color: var(--dark);
+            position: relative;
+            padding-left: 1rem;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 5px;
+            height: 80%;
+            width: 4px;
+            background-color: var(--points);
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            color: #7f8c8d;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        /* 商品网格 */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* 商品卡片 */
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 1px solid #eee;
+        }
+
+        .product-info {
+            padding: 1.5rem;
+        }
+
+        .product-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .product-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        .product-price {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--points);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .product-price i {
+            font-size: 1rem;
+        }
+
+        .product-stock {
+            color: var(--secondary);
+        }
+
+        .product-stock.low {
+            color: var(--accent);
+        }
+
+        .product-description {
+            margin-bottom: 1.5rem;
+            color: #555;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .product-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background-color: var(--points);
+            color: white;
+            flex: 1;
+            justify-content: center;
+        }
+
+        .btn-primary:hover {
+            background-color: #e67e22;
+        }
+
+        .btn-primary:disabled {
+            background-color: #95a5a6;
+            cursor: not-allowed;
+        }
+
+        /* 分类筛选 */
+        .category-filter {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .category-btn {
+            padding: 0.5rem 1rem;
+            background-color: var(--light);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background-color: var(--points);
+            color: white;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            }
+
+            .points-display {
+                top: 70px;
+                right: 10px;
+                padding: 0.8rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 顶部导航栏 -->
+<nav class="navbar">
+    <div class="logo">
+        <i class="fas fa-map-marked-alt"></i>
+        <span>畅游浙江</span>
+    </div>
+    <div class="nav-actions">
+        <a href="index.html" class="nav-btn">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </a>
+        <a href="profile.html" class="nav-btn profile-btn">
+            <i class="fas fa-user"></i>
+            <span>个人中心</span>
+        </a>
+        <a href="product.html" class="nav-btn points-btn">
+            <i class="fas fa-gift"></i>
+            <span>积分商城</span>
+        </a>
+        <a href="community.html" class="nav-btn">
+            <i class="fas fa-comments"></i>
+            <span>交流社区</span>
+        </a>
+
+        <div id="user-info" class="user-info" style="display: none;">
+            <div class="user-avatar" id="user-avatar">U</div>
+            <span id="username-display"></span>
+            <button class="nav-btn logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>退出</span>
+            </button>
+        </div>
+        <button id="login-button" class="nav-btn login-btn" onclick="goToLogin()">
+            <i class="fas fa-sign-in-alt"></i>
+            <span>登录</span>
+        </button>
+    </div>
+</nav>
+
+<!-- 积分显示 -->
+<div class="points-display">
+    <i class="fas fa-coins"></i>
+    <span>我的积分:</span>
+    <span class="points-value" id="points-display">0</span>
+</div>
+
+<!-- 商品主体内容 -->
+<div class="product-container" id="app">
+    <h1 class="section-title">积分商城</h1>
+    <p class="section-subtitle">使用旅行积分兑换精美礼品</p>
+
+    <!-- 商品分类筛选 -->
+    <div class="category-filter">
+        <div class="category-btn active">全部商品</div>
+    </div>
+    <!-- 商品列表 -->
+    <div class="products-grid">
+        <div class="product-card" v-for="product in products" :key="product.id">
+            <img :src="product.imageUrl" :alt="product.name" class="product-image">
+            <div class="product-info">
+                <h3 class="product-name">{{ product.name }}</h3>
+                <div class="product-meta">
+          <span class="product-stock" :class="{low: product.stock < 10}">
+            <i class="fas fa-box-open"></i> 库存: {{ product.stock }}
+          </span>
+                    <span class="product-price">
+            <i class="fas fa-coins"></i> {{ product.price }}
+          </span>
+                </div>
+                <p class="product-description">{{ product.description || '暂无商品描述' }}</p>
+                <div class="product-actions">
+                    <button class="btn btn-primary"
+                            @click="purchaseProduct(product.id)"
+                            :disabled="product.stock <= 0">
+                        <i class="fas fa-shopping-cart"></i>
+                        {{ product.stock > 0 ? '立即兑换' : '已售罄' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // 检查登录状态
+    function checkLoginStatus() {
+        const username = localStorage.getItem('username');
+        if (username) {
+            document.getElementById('username-display').textContent = username;
+            document.getElementById('user-avatar').textContent = username.charAt(0).toUpperCase();
+            document.getElementById('user-info').style.display = 'flex';
+            document.getElementById('login-button').style.display = 'none';
+        } else {
+            document.getElementById('user-info').style.display = 'none';
+            document.getElementById('login-button').style.display = 'flex';
+        }
+    }
+
+    // 跳转到登录页面
+    function goToLogin() {
+        window.location.href = 'login.html';
+    }
+
+    // 退出登录
+    function logout() {
+        localStorage.removeItem('username');
+        localStorage.removeItem('userId');
+        checkLoginStatus();
+        alert('退出成功！');
+        window.location.reload();
+    }
+
+    // Vue应用
+    const { createApp, ref, onMounted } = Vue;
+    createApp({
+        setup() {
+            const products = ref([]);
+            const userId = localStorage.getItem('userId');
+            const userPoints = ref(0);
+
+            // 获取所有商品
+            const fetchProducts = async () => {
+                try {
+                    const response = await axios.get('http://localhost:8082/api/products');
+                    products.value = response.data;
+                } catch (error) {
+                    console.error('获取商品失败', error);
+                }
+            };
+
+            // 获取用户积分
+            const fetchUserPoints = async () => {
+                const userId = localStorage.getItem('userId');
+                if (!userId) {
+                    console.error('用户 ID 未找到，请先登录');
+                    return;
+                }
+                try {
+                    const url = `http://localhost:8082/api/user/${userId}/points`;
+                    const response = await axios.get(url);
+                    userPoints.value = response.data.points;
+                    document.getElementById('points-display').textContent = userPoints.value;
+                } catch (error) {
+                    console.error('获取用户积分失败', error);
+                }
+            };
+
+            // 购买商品
+            const purchaseProduct = async (productId) => {
+                const product = products.value.find(p => p.id === productId);
+                const confirmPurchase = confirm(`确定花费 ${product.price} 积分购买此商品吗？`);
+                if (confirmPurchase) {
+                    try {
+                        const response = await axios.post(`http://localhost:8082/api/products/${productId}/purchase`, { userId });
+                        if (response.data.success) {
+                            alert('购买成功！');
+                            fetchProducts(); // 刷新商品列表
+                            fetchUserPoints(); // 刷新用户积分
+                        } else {
+                            alert(response.data.message || '购买失败');
+                        }
+                    } catch (error) {
+                        if (error.response) {
+                            alert(error.response.data.message || '购买失败');
+                        } else {
+                            alert('购买失败：' + error.message);
+                        }
+                    }
+                }
+            };
+
+            // 初始化时加载商品和用户积分
+            onMounted(() => {
+                checkLoginStatus();
+                fetchProducts();
+                fetchUserPoints();
+            });
+
+            return { products, purchaseProduct };
+        }
+    }).mount('#app');
+</script>
+</body>
+</html>

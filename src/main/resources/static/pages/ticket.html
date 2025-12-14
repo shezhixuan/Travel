@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>景点购票 - 畅游浙江</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        :root {
+            --primary: #3498db;
+            --secondary: #2ecc71;
+            --accent: #e74c3c;
+            --dark: #2c3e50;
+            --light: #ecf0f1;
+            --points: #f39c12;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* 顶部导航栏 */
+        .navbar {
+            background-color: var(--dark);
+            padding: 0.8rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 0.5rem;
+            color: var(--primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-btn {
+            color: white;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .nav-btn i {
+            font-size: 1rem;
+        }
+
+        .nav-btn:hover {
+            opacity: 0.9;
+        }
+
+        .profile-btn {
+            background-color: var(--primary);
+        }
+
+        .points-btn {
+            background-color: var(--secondary);
+        }
+
+        .login-btn {
+            background-color: var(--primary);
+        }
+
+        .logout-btn {
+            background-color: var(--accent);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: white;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: var(--light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--dark);
+        }
+
+        /* 票务容器 */
+        .ticket-container {
+            max-width: 800px;
+            margin: 0 auto 3rem;
+            padding: 0 1rem;
+        }
+
+        .ticket-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .ticket-header h2 {
+            font-size: 1.8rem;
+            color: var(--dark);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        /* 景点信息 */
+        .spot-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .spot-image {
+            height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .spot-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .spot-card:hover .spot-image img {
+            transform: scale(1.03);
+        }
+
+        .spot-content {
+            padding: 1.5rem;
+        }
+
+        .spot-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .spot-location {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #7f8c8d;
+            margin-bottom: 1rem;
+        }
+
+        /* 价格信息 */
+        .price-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .price-row:last-child {
+            border-bottom: none;
+        }
+
+        .price-label {
+            color: #7f8c8d;
+        }
+
+        .price-value {
+            font-weight: 600;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: #7f8c8d;
+        }
+
+        .discount-price {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .points-earned {
+            color: var(--points);
+        }
+
+        /* 积分滑块 */
+        .slider-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .slider-container {
+            margin: 1.5rem 0;
+            width: 100%;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            border-radius: 4px;
+            background: #ddd;
+            outline: none;
+            margin: 10px 0;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--points);
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--points);
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: -10px;
+            color: #7f8c8d;
+            font-size: 0.8rem;
+        }
+
+        /* 表单区域 */
+        .form-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        /* 购买按钮 */
+        .purchase-btn {
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .purchase-btn:hover {
+            background-color: #27ae60;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            .spot-image {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+<!-- 顶部导航栏 -->
+<nav class="navbar">
+    <div class="logo">
+        <i class="fas fa-map-marked-alt"></i>
+        <span>畅游浙江</span>
+    </div>
+
+    <div class="nav-actions">
+        <a href="profile.html" class="nav-btn profile-btn">
+            <i class="fas fa-user"></i>
+            <span>个人中心</span>
+        </a>
+        <a href="community.html" class="nav-btn" style="background-color: #9b59b6;">
+            <i class="fas fa-comments"></i>
+            <span>交流社区</span>
+        </a>
+        <a href="product.html" class="nav-btn points-btn">
+            <i class="fas fa-gift"></i>
+            <span>积分商城</span>
+        </a>
+
+        <div id="user-info" class="user-info" style="display: none;">
+            <div class="user-avatar" id="user-avatar">U</div>
+            <span id="username-display"></span>
+            <button class="nav-btn logout-btn" onclick="logout()">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>退出</span>
+            </button>
+        </div>
+        <button id="login-button" class="nav-btn login-btn" onclick="goToLogin()">
+            <i class="fas fa-sign-in-alt"></i>
+            <span>登录</span>
+        </button>
+    </div>
+</nav>
+
+<!-- 票务主体内容 -->
+<div class="ticket-container">
+    <div class="ticket-header">
+        <h2><i class="fas fa-ticket-alt"></i> 景点购票</h2>
+        <p>使用积分可抵扣部分费用，购票还可获得新积分</p>
+    </div>
+
+    <!-- 价格信息 -->
+    <div class="price-section">
+        <div class="price-row">
+            <span class="price-label">我的积分</span>
+            <span class="price-value"><span id="user-points">0</span> (最多可抵扣20%)</span>
+        </div>
+        <div class="price-row">
+            <span class="price-label">使用积分</span>
+            <span class="price-value" id="points-used">0</span>
+        </div>
+        <div class="price-row">
+            <span class="price-label">抵扣金额</span>
+            <span class="price-value" id="discount-amount">¥0</span>
+        </div>
+        <div class="price-row">
+            <span class="price-label">实际支付</span>
+            <span class="price-value discount-price" id="actual-price">¥0</span>
+        </div>
+        <div class="price-row">
+            <span class="price-label">可获得积分</span>
+            <span class="price-value points-earned" id="points-earned">0</span>
+        </div>
+    </div>
+
+    <!-- 积分滑块 -->
+    <div class="slider-section">
+        <h3><i class="fas fa-coins"></i> 积分抵扣</h3>
+        <div class="slider-container">
+            <div class="slider-header">
+                <label for="points-slider">使用积分: <span id="points-to-use">0</span></label>
+                <span>最多可用: <span id="max-points">0</span></span>
+            </div>
+            <input type="range" id="points-slider" class="slider" min="0" value="0">
+            <div class="slider-labels">
+                <span>0</span>
+                <span id="max-points-label">0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 用户信息表单 -->
+    <div class="form-section">
+        <h3><i class="fas fa-user-edit"></i> 购票信息</h3>
+        <div class="form-group">
+            <label for="user-name">登录名</label>
+            <input type="text" id="user-name" class="form-control" required>
+        </div>
+        <div class="form-group">
+            <label for="user-phone">手机号</label>
+            <input type="tel" id="user-phone" class="form-control" required>
+        </div>
+    </div>
+
+    <!-- 购买按钮 -->
+    <button id="purchase-btn" class="purchase-btn">
+        <i class="fas fa-shopping-cart"></i> 确认购票
+    </button>
+</div>
+
+<script>
+    // 获取URL参数
+    const urlParams = new URLSearchParams(window.location.search);
+    const spotId = urlParams.get('spotId');
+    const userId = localStorage.getItem('userId');
+    const username = localStorage.getItem('username');
+
+    let spotInfo = {};
+    let userPoints = 0;
+    let originalPrice = 0;
+    let maxPointsToUse = 0;
+
+    // 检查登录状态
+    function checkLoginStatus() {
+        const username = localStorage.getItem('username');
+        if (username) {
+            document.getElementById('username-display').textContent = username;
+            document.getElementById('user-avatar').textContent = username.charAt(0).toUpperCase();
+            document.getElementById('user-info').style.display = 'flex';
+            document.getElementById('login-button').style.display = 'none';
+            return true;
+        } else {
+            document.getElementById('user-info').style.display = 'none';
+            document.getElementById('login-button').style.display = 'flex';
+            return false;
+        }
+    }
+
+    // 跳转到登录页面
+    function goToLogin() {
+        window.location.href = 'login.html';
+    }
+
+    // 退出登录
+    function logout() {
+        localStorage.removeItem('username');
+        localStorage.removeItem('userId');
+        checkLoginStatus();
+        alert('退出成功！');
+        window.location.reload();
+    }
+
+    // 页面加载时初始化
+    window.onload = async function() {
+        checkLoginStatus();
+
+        if (!userId) {
+            alert('请先登录！');
+            window.location.href = 'login.html';
+            return;
+        }
+
+        // 获取用户积分
+        await fetchUserPoints();
+
+        // 获取景点信息
+        await fetchSpotInfo();
+
+        // 初始化滑块
+        initSlider();
+
+        // 设置默认用户名
+        document.getElementById('user-name').value = username || '';
+    };
+
+    // 获取景点信息
+    async function fetchSpotInfo() {
+        try {
+            const response = await fetch(`/api/scenic-spots/${spotId}`);
+            const data = await response.json();
+
+            spotInfo = data;
+            originalPrice = data.price || 100; // 默认100元
+            maxPointsToUse = Math.floor(originalPrice * 20); // 20%折扣，假设1积分=1分钱
+
+            document.getElementById('spot-name').textContent = data.name;
+            document.getElementById('spot-location').textContent = data.location;
+            document.getElementById('spot-image').src = data.imageUrl;
+            document.getElementById('original-price').textContent = `¥${originalPrice.toFixed(2)}`;
+
+            // 更新滑块最大值
+            document.getElementById('points-slider').max = Math.min(maxPointsToUse, userPoints);
+            document.getElementById('max-points').textContent = Math.min(maxPointsToUse, userPoints);
+            document.getElementById('max-points-label').textContent = Math.min(maxPointsToUse, userPoints);
+            updatePriceInfo();
+        } catch (error) {
+            console.error('获取景点信息失败:', error);
+        }
+    }
+
+    // 获取用户积分
+    async function fetchUserPoints() {
+        try {
+            const response = await fetch(`/api/user/${userId}/points`);
+            const data = await response.json();
+            userPoints = data.points || 0;
+            document.getElementById('user-points').textContent = userPoints;
+
+            // 更新滑块最大值
+            const slider = document.getElementById('points-slider');
+            const maxPoints = Math.min(maxPointsToUse, userPoints);
+            slider.max = maxPoints;
+            document.getElementById('max-points').textContent = maxPoints;
+            document.getElementById('max-points-label').textContent = maxPoints;
+        } catch (error) {
+            console.error('获取用户积分失败:', error);
+        }
+    }
+
+    // 初始化滑块
+    function initSlider() {
+        const slider = document.getElementById('points-slider');
+        const pointsDisplay = document.getElementById('points-to-use');
+
+        // 设置滑块最大值
+        const maxPoints = Math.min(maxPointsToUse, userPoints);
+        slider.max = maxPoints;
+        document.getElementById('max-points').textContent = maxPoints;
+        document.getElementById('max-points-label').textContent = maxPoints;
+
+        // 更新显示值
+        slider.addEventListener('input', function() {
+            pointsDisplay.textContent = this.value;
+            updatePriceInfo();
+        });
+
+        // 触摸设备支持
+        slider.addEventListener('touchstart', function() {
+            this.focus();
+        });
+    }
+
+    // 更新价格信息
+    function updatePriceInfo() {
+        const slider = document.getElementById('points-slider');
+        const pointsToUse = parseInt(slider.value);
+        const discountAmount = pointsToUse / 100; // 假设1积分=1分钱
+        const actualPrice = originalPrice - discountAmount;
+        const pointsEarned = Math.floor(actualPrice * 10); // 消费1元获得10积分
+
+        // 确保实际价格不低于0
+        const finalPrice = Math.max(0, actualPrice);
+
+        document.getElementById('points-used').textContent = pointsToUse;
+        document.getElementById('discount-amount').textContent = `¥${discountAmount.toFixed(2)}`;
+        document.getElementById('actual-price').textContent = `¥${finalPrice.toFixed(2)}`;
+        document.getElementById('points-earned').textContent = pointsEarned;
+    }
+
+    // 购票按钮点击事件
+    document.getElementById('purchase-btn').addEventListener('click', async function() {
+        const userName = document.getElementById('user-name').value.trim();
+        const userPhone = document.getElementById('user-phone').value.trim();
+        const pointsToUse = parseInt(document.getElementById('points-slider').value);
+
+        if (!userName) {
+            alert('请输入姓名！');
+            return;
+        }
+
+        if (!userPhone) {
+            alert('请输入手机号！');
+            return;
+        }
+
+        try {
+            const response = await fetch('/api/orders/ticket', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    spotId: spotId,
+                    userId: userId,
+                    userName: userName,
+                    userPhone: userPhone,
+                    pointsToUse: pointsToUse
+                })
+            });
+
+            if (response.ok) {
+                const order = await response.json();
+                alert('购票成功！');
+                window.location.href = `scenery.html`;
+            } else {
+                const error = await response.json();
+                alert(`购票失败: ${error.message}`);
+            }
+        } catch (error) {
+            console.error('购票失败:', error);
+            alert('购票失败，请稍后重试');
+        }
+    });
+</script>
+</body>
+</html>
